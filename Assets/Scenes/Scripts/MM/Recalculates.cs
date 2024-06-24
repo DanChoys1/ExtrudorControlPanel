@@ -38,21 +38,6 @@ public class Recalculates : MonoBehaviour
 
     [SerializeField] private TMP_Text       _scenarioLabel;
 
-    [SerializeField] private TMP_Text       _resText;
-
-    [SerializeField] private WindowGraph    _GTrendGraph;
-    [SerializeField] private WindowGraph    _IdTrendGraph;
-    [SerializeField] private WindowGraph    _FsTrendGraph;
-    [SerializeField] private WindowGraph    _YTrendGraph;
-
-    [SerializeField] private WindowGraph    _XGraph;
-    [SerializeField] private WindowGraph    _PGraph;
-    [SerializeField] private WindowGraph    _TGraph;
-    [SerializeField] private WindowGraph    _WorkDotGraph;
-    [SerializeField] private TableManager   _XPTTabel;
-
-    [SerializeField] private TableManager   _logTabel;
-
     [SerializeField] private TMP_Text       _resTextInstructor;
 
     [SerializeField] private WindowGraph    _GTrendGraphInstructor;
@@ -84,8 +69,6 @@ public class Recalculates : MonoBehaviour
 
     public void SetInitData()
     {
-        Clear();
-
         _qdAdapter.initData = collectData.GetInitData();
         InitData initData = _qdAdapter.initData;
         Train train = initData.train;
@@ -96,11 +79,6 @@ public class Recalculates : MonoBehaviour
                               $"{train.Is0:f2}\n";
 
         _operTime.SetTime(TimeSpan.FromMinutes(train.Time));
-
-        _GTrendGraph.SetYMaxLine((float)train.G0);
-        _YTrendGraph.SetYMaxLine((float)train.Is0);
-        _IdTrendGraph.SetYMaxLine((float)train.Id_max);
-        _FsTrendGraph.SetYMaxLine((float)train.Fs_max);
 
         _GTrendGraphInstructor.SetYMaxLine((float)train.G0);
         _YTrendGraphInstructor.SetYMaxLine((float)train.Is0);
@@ -119,29 +97,10 @@ public class Recalculates : MonoBehaviour
 
     void Clear()
     {
-        /// Show res
-        _resText.text = $"{0:f2}\n" +
-                        $"{0:f2}\n" +
-                        $"{0:f2}\n" +
-                        $"{0:f2}\n";
         _resTextInstructor.text = $"{0:f2}\n" +
                                   $"{0d:f2}\n" +
                                   $"{0:f2}\n" +
                                   $"{0:f2}\n";
-
-        //Обучаемый
-        _GTrendGraph.Clear();
-        _IdTrendGraph.Clear();
-        _FsTrendGraph.Clear();
-        _YTrendGraph.Clear();
-
-        _XGraph.Clear();
-        _PGraph.Clear();
-        _TGraph.Clear();
-        _WorkDotGraph.Clear();
-        _XPTTabel.Clear();
-
-        _logTabel.Clear();
 
         //Инструктор
         _GTrendGraphInstructor.Clear();
@@ -207,54 +166,6 @@ public class Recalculates : MonoBehaviour
         _qdAdapter.initData.cyl[0].T_W_k_ = double.Parse(_temp1.text);
         _qdAdapter.initData.cyl[1].T_W_k_ = double.Parse(_temp2.text);
         await Task.Run(() => _qdAdapter.init());
-        
-        //await Task.Run(() =>
-        //{
-        //    string text = "";
-        //    ///////////////////////////////////////////
-        //    double n = _qdAdapter.initData.data.N_;
-        //    for (int i = 0; i < 20; ++i)
-        //    {
-        //        _qdAdapter.initData.data.N_ = n + i;
-        //        _qdAdapter.init();
-        //        text += $"{G()}\n";
-        //    }
-        //    Debug.Log(text);
-
-        //    double t = _qdAdapter.initData.cyl[1].T_W_k_;
-        //    text = "";
-        //    string ns = "";
-        //    string ts = "";
-        //    //for (int i = 0; i < 20; ++i)
-        //    //{
-        //    //    _qdAdapter.initData.data.N_ = n + i;
-        //    //    for (int j = 0; j < 20; ++j)
-        //    //    {
-        //    //        _qdAdapter.initData.cyl[1].T_W_k_ = t + j;
-        //    //        _qdAdapter.init();
-        //    //        text += $"{Id()}\n";
-        //    //        ns += $"{_qdAdapter.initData.data.N_}\n";
-        //    //        ts += $"{_qdAdapter.initData.cyl[1].T_W_k_}\n";
-        //    //    }
-        //    //}
-        //    //Debug.Log(text);
-        //    //Debug.Log(ns);
-        //    //Debug.Log(ts);
-
-        //    for (int j = 0; j < 1; ++j)
-        //    {
-        //        for (int i = 0; i < 1; ++i)
-        //        {
-        //            _qdAdapter.initData.data.N_ = n + i;
-        //            _qdAdapter.initData.cyl[1].T_W_k_ = t + j;
-        //            _qdAdapter.init();
-        //            text += $"{Id()}\n";
-        //        }
-
-        //        Debug.Log(text);
-        //        text = "";
-        //    }
-        //});
 
         ///////////////////////////////////////////
 
@@ -270,20 +181,10 @@ public class Recalculates : MonoBehaviour
         float y = Dmix();
         float dY = y / (float)Math.Max(train.Is0, 1e-5) * 100 - 100;
 
-        /// Show res
-        _resText.text = $"{g:f2}\n" +
-                        $"{id:f2}\n" +
-                        $"{fs:f2}\n" +
-                        $"{y:f2}\n";
         _resTextInstructor.text = $"{g:f2}\n" +
                                   $"{id:f2}\n" +
                                   $"{fs:f2}\n" +
                                   $"{y:f2}\n";
-
-        /// Show X P T WorkDot Graphs
-        _XGraph.SetData(_qdAdapter.qpt.XZ.Last());
-        _PGraph.SetData(_qdAdapter.qpt.PZ.Last());
-        _TGraph.SetData(_qdAdapter.qpt.TZ.Last());
 
         _XGraphInstructor.SetData(_qdAdapter.qpt.XZ.Last());
         _PGraphInstructor.SetData(_qdAdapter.qpt.PZ.Last());
@@ -296,40 +197,16 @@ public class Recalculates : MonoBehaviour
             mt.Add(  new((float)(_qdAdapter.die.M_Q[i] * 1e2), (float)_qdAdapter.die.Res.MP[i]));
             tout.Add(new((float)(_qdAdapter.die.M_Q[i] * 1e2), (float)_qdAdapter.die.M_P[i]));
         }
-        _WorkDotGraph.SetData(mt, tout);
         _WorkDotGraphInstructor.SetData(mt, tout);
 
-        /// Show X P T Table
-        _XPTTabel.SetData(_qdAdapter.qpt.ZXPT.Last());
-
         /// Show G Id Fs Y Trend Graphs
-        _GTrendGraph .AddData(new Vector((float)_operTime.GetMin(), g));
-        _IdTrendGraph.AddData(new Vector((float)_operTime.GetMin(), id));
-        _FsTrendGraph.AddData(new Vector((float)_operTime.GetMin(), fs));
-        _YTrendGraph .AddData(new Vector((float)_operTime.GetMin(), y));
 
         _GTrendGraphInstructor .AddData(new Vector((float)_operTime.GetMin(), g));
         _IdTrendGraphInstructor.AddData(new Vector((float)_operTime.GetMin(), id));
         _FsTrendGraphInstructor.AddData(new Vector((float)_operTime.GetMin(), fs));
         _YTrendGraphInstructor .AddData(new Vector((float)_operTime.GetMin(), y));
 
-        /// Log 
-        _logTabel.AddData(new List<object>
-        {
-            _operTime.GetTimeStr(),
-            _qdAdapter.initData.data.N_,
-            _qdAdapter.initData.cyl[0].T_W_k_,
-            _qdAdapter.initData.cyl[1].T_W_k_,
-            g,
-            dG,
-            id,
-            dId,
-            fs,
-            dFs,
-            y,
-            dY
-        });
-
+        /// Log
         _logTabelInstructor.AddData(new List<object>
         {
             _operTime.GetTimeStr(),
