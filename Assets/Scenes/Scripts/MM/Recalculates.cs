@@ -50,6 +50,8 @@ public class Recalculates : MonoBehaviour
     [SerializeField] private WindowGraph    _TGraphInstructor;
     [SerializeField] private WindowGraph    _WorkDotGraphInstructor;
 
+    [SerializeField] private TableManager    _XPTTableInstructor;
+
     [SerializeField] private TableManager   _logTabelInstructor;
 
     [SerializeField] private CollectData collectData;
@@ -73,24 +75,24 @@ public class Recalculates : MonoBehaviour
         InitData initData = _qdAdapter.initData;
         Train train = initData.train;
 
-        _scenarioLabel.text = $"{train.G0:f2}\n" +
-                              $"{train.Id_max:f2}\n" +
-                              $"{train.Fs_max:f2}\n" +
-                              $"{train.Is0:f2}\n";
+        //_scenarioLabel.text = $"{train.G0:f2}\n" +
+        //                      $"{train.Id_max:f2}\n" +
+        //                      $"{train.Fs_max:f2}\n" +
+        //                      $"{train.Is0:f2}\n";
 
-        _operTime.SetTime(TimeSpan.FromMinutes(train.Time));
+        //_operTime.SetTime(TimeSpan.FromMinutes(train.Time));
 
-        _GTrendGraphInstructor.SetYMaxLine((float)train.G0);
-        _YTrendGraphInstructor.SetYMaxLine((float)train.Is0);
-        _IdTrendGraphInstructor.SetYMaxLine((float)train.Id_max);
-        _FsTrendGraphInstructor.SetYMaxLine((float)train.Fs_max);
+        //_GTrendGraphInstructor.SetYMaxLine((float)train.G0);
+        //_YTrendGraphInstructor.SetYMaxLine((float)train.Is0);
+        //_IdTrendGraphInstructor.SetYMaxLine((float)train.Id_max);
+        //_FsTrendGraphInstructor.SetYMaxLine((float)train.Fs_max);
 
-        _shnekSpeed.text = initData.data.N_.ToString();
-        RecalcShnekSpeed();
-        _temp1.text = initData.cyl[0].T_W_k_.ToString();
-        SetTempTarget1();
-        _temp2.text = initData.cyl[1].T_W_k_.ToString();
-        SetTempTarget2();
+        //_shnekSpeed.text = initData.data.N_.ToString();
+        //RecalcShnekSpeed();
+        //_temp1.text = initData.cyl[0].T_W_k_.ToString();
+        //SetTempTarget1();
+        //_temp2.text = initData.cyl[1].T_W_k_.ToString();
+        //SetTempTarget2();
 
         RecalcOutData();
     }
@@ -162,9 +164,9 @@ public class Recalculates : MonoBehaviour
 
     async void RecalcOutDataAsync()
     {
-        _qdAdapter.initData.data.N_       = Math.Max(double.Parse(_shnekSpeed.text), 0.1);
-        _qdAdapter.initData.cyl[0].T_W_k_ = double.Parse(_temp1.text);
-        _qdAdapter.initData.cyl[1].T_W_k_ = double.Parse(_temp2.text);
+        //_qdAdapter.initData.data.N_       = Math.Max(double.Parse(_shnekSpeed.text), 0.1);
+        //_qdAdapter.initData.cyl[0].T_W_k_ = double.Parse(_temp1.text);
+        //_qdAdapter.initData.cyl[1].T_W_k_ = double.Parse(_temp2.text);
         await Task.Run(() => _qdAdapter.init());
 
         ///////////////////////////////////////////
@@ -199,29 +201,31 @@ public class Recalculates : MonoBehaviour
         }
         _WorkDotGraphInstructor.SetData(mt, tout);
 
+        _XPTTableInstructor.SetData(_qdAdapter.qpt.ZXPT.Last());
+
         /// Show G Id Fs Y Trend Graphs
 
-        _GTrendGraphInstructor .AddData(new Vector((float)_operTime.GetMin(), g));
-        _IdTrendGraphInstructor.AddData(new Vector((float)_operTime.GetMin(), id));
-        _FsTrendGraphInstructor.AddData(new Vector((float)_operTime.GetMin(), fs));
-        _YTrendGraphInstructor .AddData(new Vector((float)_operTime.GetMin(), y));
+        //_GTrendGraphInstructor .AddData(new Vector((float)_operTime.GetMin(), g));
+        //_IdTrendGraphInstructor.AddData(new Vector((float)_operTime.GetMin(), id));
+        //_FsTrendGraphInstructor.AddData(new Vector((float)_operTime.GetMin(), fs));
+        //_YTrendGraphInstructor .AddData(new Vector((float)_operTime.GetMin(), y));
 
         /// Log
-        _logTabelInstructor.AddData(new List<object>
-        {
-            _operTime.GetTimeStr(),
-            _qdAdapter.initData.data.N_,
-            _qdAdapter.initData.cyl[0].T_W_k_,
-            _qdAdapter.initData.cyl[1].T_W_k_,
-            g,
-            dG,
-            id,
-            dId,
-            fs,
-            dFs,
-            y,
-            dY
-        });
+        //_logTabelInstructor.AddData(new List<object>
+        //{
+        //    _operTime.GetTimeStr(),
+        //    _qdAdapter.initData.data.N_,
+        //    _qdAdapter.initData.cyl[0].T_W_k_,
+        //    _qdAdapter.initData.cyl[1].T_W_k_,
+        //    g,
+        //    dG,
+        //    id,
+        //    dId,
+        //    fs,
+        //    dFs,
+        //    y,
+        //    dY
+        //});
     }
 
     private float G()

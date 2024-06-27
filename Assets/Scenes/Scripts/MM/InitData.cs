@@ -43,7 +43,7 @@ namespace Program
             data.T_PL_          = 110;
             data.K_PL_          = 0;
             data.T_St           = 50;
-            data.a_T_           = 0.000000008;
+            data.a_T_           = 8;
             data.Lam_T_         = 0.16;
             data.Lam_k          = 12.7;
             data.Lam_s          = 12.7;
@@ -254,10 +254,11 @@ namespace Program
 
             ////////// Train //////////
             train.Designation = "train1";
-            train.Time = 30;
+            train.Time = 99999999999;
             train.G0 = 50;
             train.Id_max = 5;
             train.Fs_max = 0.1;
+            train.Is0 = 1650;
     }
     }
 }
