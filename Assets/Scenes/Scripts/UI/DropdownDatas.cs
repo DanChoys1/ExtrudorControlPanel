@@ -283,7 +283,7 @@ public class DropdownDatas : Value
         string newOptName = (string)currVals[designValName].Val;
         if (newOptName != optName && optVals.ContainsKey(newOptName))
         {
-            EditorUtility.DisplayDialog("Предупреждение", $"Название {newOptName} уже используется!\n Попробуйте другое.", "Хорошо");
+            //EditorUtility.DisplayDialog("Предупреждение", $"Название {newOptName} уже используется!\n Попробуйте другое.", "Хорошо");
             return;
         }
 
@@ -451,6 +451,6 @@ public class DropdownDatas : Value
 
     private bool ResetChangesMsg()
     {
-        return EditorUtility.DisplayDialog("Предупреждение", "Изменения не сохранены, продолжить?", "Да", "Нет");
+        return true;
     }
 }

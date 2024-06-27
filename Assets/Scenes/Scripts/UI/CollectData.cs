@@ -14,7 +14,7 @@ public class CollectData : MonoBehaviour
 
     private void Start()
     {
-        //SetInitData(new InitData());
+        SetInitData(new InitData());
     }
 
     public InitData GetInitData()
@@ -22,10 +22,17 @@ public class CollectData : MonoBehaviour
         valuesGroups = new List<ValuesGroup>(GetComponentsInChildren<ValuesGroup>());
         valuesGroupArrays = new List<ValuesGroupArray>(GetComponentsInChildren<ValuesGroupArray>());
 
+        //Debug.Log(valuesGroups.Count);
+        //Debug.Log(valuesGroupArrays.Count);
+        foreach(ValuesGroupArray val in valuesGroupArrays)
+        {
+            //Debug.Log(val.name);
+        }
+
         InitData initData = new InitData(false);
-        InitValuesGroupArray(ref initData.cyl, "BarrelConfiguration");
-        InitValuesGroupArray(ref initData.sect, "ScrewConfiguration");
-        InitValuesGroupArray(ref initData.S_K.S, "DieConfiguration");
+        InitValuesGroupArray(ref initData.cyl, "Types.CYLINDER");
+        InitValuesGroupArray(ref initData.sect, "Types.SECT");
+        InitValuesGroupArray(ref initData.S_K.S, "Types.SECTIONS");
         initData.S_K.Num_S = initData.S_K.S.Length;
         InitValuesGroup(ref initData.data);
         initData.data.nS_1 = initData.sect.Count((SECT sec) => sec.S_Type == 1);
@@ -71,6 +78,7 @@ public class CollectData : MonoBehaviour
 
     List<ValuesGroup> GetValuesGroups(string name)
     {
+        //
         List<ValuesGroup> grs = new List<ValuesGroup>();
         for (int i = 0; i < valuesGroups.Count; ++i)
         {
@@ -97,6 +105,8 @@ public class CollectData : MonoBehaviour
             {
                 return valuesGroupArrays[i];
             }
+
+            //Debug.Log("Value name = " + valuesGroupArrays[i].name + $" {i} {valuesGroupArrays.Count}");
         }
 
         return null;
@@ -104,6 +114,7 @@ public class CollectData : MonoBehaviour
 
     public void InitValuesGroupArray<T>(ref T[] valuesGroup, string name)
     {
+        //Debug.Log(name);
         ValuesGroupArray grArrs = GetValuesGroupArray(name);
         List<ValuesGroup> grs = grArrs.GetGroups();
         if (grs.Count == 0)
@@ -121,10 +132,10 @@ public class CollectData : MonoBehaviour
 
     public void InitValuesGroup<T>(ref T valuesGroup)
     {
-        List<ValuesGroup> grs = GetValuesGroups(typeof(T).ToString()[6..]);
+        List<ValuesGroup> grs = GetValuesGroups(typeof(T).ToString());
         if (grs.Count == 0)
         {
-            Debug.Log("На форме не найден тип массива" + typeof(T).ToString());
+            //Debug.Log("На форме не найден тип массива" + typeof(T).ToString());
             return;
         }
 

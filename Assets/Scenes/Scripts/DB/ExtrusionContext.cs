@@ -8,7 +8,7 @@ namespace Database
 {
     public partial class ExtrusionContext : DbContext
     {
-        const string DefaultConnectStr = "Host=localhost;Port=5432;Database=Extrusion;Username=postgres;Password=1";
+        const string DefaultConnectStr = "Host=localhost;Port=5430;Database=Extrusion;Username=postgres;Password=1";
         const string ConnectFile = "connectData.info";
 
         public ExtrusionContext()
