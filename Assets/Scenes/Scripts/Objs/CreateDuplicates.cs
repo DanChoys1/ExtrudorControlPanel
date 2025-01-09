@@ -13,6 +13,8 @@ public class CreateDuplicates : MonoBehaviour
     private List<GameObject> extrudatPrefabs = new List<GameObject>();
     int prefCount = 0;
 
+    private float transitionValue;
+
     void Start()
     {
         gameObject.GetChildGameObjects(extrudatPrefabs);
@@ -50,10 +52,16 @@ public class CreateDuplicates : MonoBehaviour
         GameObject newObj = Instantiate(extrudatPrefabs[Random.Range(0, prefCount)], gameObject.transform);
         newObj.GetComponent<Rigidbody>().drag = Random.value;
         newObj.GetComponent<BoxCollider>().material.bounciness = Random.value;
+        newObj.GetComponent<Testure>().transitionValue = transitionValue;
         newObj.SetActive(true);
 
         Destroy(newObj, destroyDilay);
 
         return newObj;
+    }
+
+    public void setTransitionValue(float trValue)
+    {
+        transitionValue = trValue;
     }
 }

@@ -69,6 +69,8 @@ public class Recalculates : MonoBehaviour
 
     [SerializeField] private CollectData collectData;
 
+    [SerializeField] private CreateDuplicates _createDuplicates;
+
     private QPT_DIE_Adapter _qdAdapter =  new QPT_DIE_Adapter();
 
     void Start()
@@ -269,6 +271,8 @@ public class Recalculates : MonoBehaviour
         float dFs = Math.Max(fs / (float)train.Fs_max * 100 - 100, 0);
         float y = Dmix();
         float dY = y / (float)Math.Max(train.Is0, 1e-5) * 100 - 100;
+
+        _createDuplicates.setTransitionValue(id);
 
         /// Show res
         _resText.text = $"{g:f2}\n" +
