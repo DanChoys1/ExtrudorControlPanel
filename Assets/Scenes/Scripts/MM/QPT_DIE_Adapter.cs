@@ -32,8 +32,31 @@ namespace Extruder
             init(initData);
         }
 
+        public void initDual(InitData id)
+        {
+            try
+            {
+                qptDual = new QPTDual();
+                qptDual.init(id);
+                id.resDual = qptDual.Res;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+            }
+        }
+
+        public void initDual()
+        {
+            initDual(initData);
+        }
+
+        public InitData initData;
+
         public QPT qpt = new QPT();
         public DIE die = new DIE();
-        public InitData initData;
+
+        public QPTDual qptDual = new QPTDual();
+
     }
 }

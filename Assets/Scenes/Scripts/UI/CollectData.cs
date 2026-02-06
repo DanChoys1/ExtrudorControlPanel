@@ -5,6 +5,8 @@ using System.Linq;
 using Types;
 using UnityEngine;
 
+using System;
+
 public class CollectData : MonoBehaviour
 {
     private List<ValuesGroup> valuesGroups;
@@ -24,23 +26,53 @@ public class CollectData : MonoBehaviour
 
         //Debug.Log(valuesGroups.Count);
         //Debug.Log(valuesGroupArrays.Count);
-        foreach(ValuesGroupArray val in valuesGroupArrays)
-        {
+        //foreach(ValuesGroupArray val in valuesGroupArrays)
+        //{
             //Debug.Log(val.name);
-        }
+        //}
 
         InitData initData = new InitData(false);
-        InitValuesGroupArray(ref initData.cyl, "Types.CYLINDER");
-        InitValuesGroupArray(ref initData.sect, "Types.SECT");
-        InitValuesGroupArray(ref initData.S_K.S, "Types.SECTIONS");
-        initData.S_K.Num_S = initData.S_K.S.Length;
-        InitValuesGroup(ref initData.data);
-        initData.data.nS_1 = initData.sect.Count((SECT sec) => sec.S_Type == 1);
-        initData.data.nS_2 = initData.sect.Count((SECT sec) => sec.S_Type == 2);
-        initData.data.nS_korp = initData.cyl.Count();
-        InitValuesGroup(ref initData.dop);
-        InitValuesGroup(ref initData.fluxData);
-        InitValuesGroup(ref initData.train);
+        // Uno
+        //InitValuesGroupArray(ref initData.cyl, "Types.CYLINDER");
+        //InitValuesGroupArray(ref initData.sect, "Types.SECT");
+        //InitValuesGroupArray(ref initData.S_K.S, "Types.SECTIONS");
+        //initData.S_K.Num_S = initData.S_K.S.Length;
+        //InitValuesGroup(ref initData.data);
+        //initData.data.nS_1 = initData.sect.Count((SECT sec) => sec.S_Type == 1);
+        //initData.data.nS_2 = initData.sect.Count((SECT sec) => sec.S_Type == 2);
+        //initData.data.nS_korp = initData.cyl.Count();
+        //InitValuesGroup(ref initData.dop);
+        //InitValuesGroup(ref initData.fluxData);
+        //InitValuesGroup(ref initData.train);
+        // Dual
+        InitValuesGroupArray(ref initData.cylinderDual, "TypesDual.CYLINDER");
+        InitValuesGroupArray(ref initData.sectDual, "TypesDual.SECT");
+        InitValuesGroupArray(ref initData.sect_aDual, "TypesDual.SECT_a");
+        InitValuesGroupArray(ref initData.s_kDual.S, "TypesDual.SECTIONS");
+        initData.s_kDual.Num_S = initData.s_kDual.S.Length;
+        InitValuesGroup(ref initData.dataDual);
+        initData.dataDual.nS_1 = initData.sectDual.Count((TypesDual.SECT sec) => sec.S_Type == 1); // нарезка
+        initData.dataDual.nS_2 = initData.sectDual.Count((TypesDual.SECT sec) => sec.S_Type == 2); // гладка€
+        initData.dataDual.nS_1a = initData.sect_aDual.Count((TypesDual.SECT_a sec) => sec.S_Type == 1); // нарезка
+        initData.dataDual.nS_2a = initData.sect_aDual.Count((TypesDual.SECT_a sec) => sec.S_Type == 2); // гладка€
+        initData.dataDual.nS_korp = initData.cylinderDual.Count();
+        InitValuesGroup(ref initData.dop_dataDual);
+        InitValuesGroup(ref initData.datDual);
+
+        //TODO ¬ременно, добавить на UI
+        initData.vulcanDual.n_inter = 2;
+        initData.vulcanDual.t_eq_int = new double[21];
+        initData.vulcanDual.t_eq_int[0] = 0;
+        initData.vulcanDual.t_eq_int[1] = 151;
+        initData.vulcanDual.t_eq_int[2] = 151;
+        initData.vulcanDual.t_eq_int[3] = 81.6;
+        initData.vulcanDual.t_eq_int[4] = 81.6;
+        initData.vulcanDual.E_R_int = new double[21];
+        initData.vulcanDual.E_R_int[0] = 0;
+        initData.vulcanDual.E_R_int[1] = 9000;
+        initData.vulcanDual.E_R_int[2] = 11000;
+        initData.vulcanDual.E_R_int[3] = 8875;
+        initData.vulcanDual.E_R_int[4] = 9750;
 
         return initData;
     }
@@ -48,20 +80,35 @@ public class CollectData : MonoBehaviour
     public void SetInitData(InitData initData)
     {
         List<ValuesGroupArray> arrays = new List<ValuesGroupArray>(GetComponentsInChildren<ValuesGroupArray>());
-        AbjastValuesGroupArray(arrays, initData.cyl);
-        AbjastValuesGroupArray(arrays, initData.sect);
-        AbjastValuesGroupArray(arrays, initData.S_K.S);
+        // Uno
+        //AbjastValuesGroupArray(arrays, initData.cyl);
+        //AbjastValuesGroupArray(arrays, initData.sect);
+        //AbjastValuesGroupArray(arrays, initData.S_K.S);
+        // Dual
+        AbjastValuesGroupArray(arrays, initData.sectDual);
+        AbjastValuesGroupArray(arrays, initData.sect_aDual);
+        AbjastValuesGroupArray(arrays, initData.cylinderDual);
+        AbjastValuesGroupArray(arrays, initData.s_kDual.S);
 
         valuesGroups = new List<ValuesGroup>(GetComponentsInChildren<ValuesGroup>());
         valuesGroupArrays = new List<ValuesGroupArray>(GetComponentsInChildren<ValuesGroupArray>());
-
-        SetValuesGroupArrays(initData.cyl);
-        SetValuesGroupArrays(initData.sect);
-        SetValuesGroupArrays(initData.S_K.S);
-        SetValuesGroup(initData.data);
-        SetValuesGroup(initData.dop);
-        SetValuesGroup(initData.fluxData);
-        SetValuesGroup(initData.train);
+        // Uno
+        //SetValuesGroupArrays(initData.cyl);
+        //SetValuesGroupArrays(initData.sect);
+        //SetValuesGroupArrays(initData.S_K.S);
+        //SetValuesGroup(initData.data);
+        //SetValuesGroup(initData.dop);
+        //SetValuesGroup(initData.fluxData);
+        //SetValuesGroup(initData.train);
+        // Dual
+        SetValuesGroupArrays(initData.sectDual);
+        SetValuesGroupArrays(initData.sect_aDual);
+        SetValuesGroupArrays(initData.cylinderDual);
+        SetValuesGroupArrays(initData.s_kDual.S);
+        SetValuesGroup(initData.dataDual);
+        //SetValuesGroup(initData.vulcanDual);
+        SetValuesGroup(initData.dop_dataDual);
+        SetValuesGroup(initData.datDual);
     }
 
     void AbjastValuesGroupArray<T>(List<ValuesGroupArray> arrays, T[] vals)
@@ -169,17 +216,24 @@ public class CollectData : MonoBehaviour
 
     public void SetValuesGroupArrays<T>(T[] valuesGroup)
     {
-        ValuesGroupArray grArrs = GetValuesGroupArray(typeof(T).ToString());
-        List<ValuesGroup> grs = grArrs.GetGroups();
-        if (grs.Count == 0)
+        try
         {
-            //Debug.Log("Ќа форме не найден тип массива" + typeof(T).ToString());
-            return;
-        }
+            ValuesGroupArray grArrs = GetValuesGroupArray(typeof(T).ToString());
+            List<ValuesGroup> grs = grArrs.GetGroups();
+            if (grs.Count == 0)
+            {
+                //Debug.Log("Ќа форме не найден тип массива" + typeof(T).ToString());
+                return;
+            }
 
-        for (int i = 0; i < grs.Count(); ++i)
+            for (int i = 0; i < grs.Count(); ++i)
+            {
+                SetValuesGroupFromGroup(valuesGroup[i], grs.GetRange(i, 1));
+            }
+        }
+        catch (Exception ex)
         {
-            SetValuesGroupFromGroup(valuesGroup[i], grs.GetRange(i, 1));
+            Debug.Log(typeof(T).ToString());
         }
     }
 

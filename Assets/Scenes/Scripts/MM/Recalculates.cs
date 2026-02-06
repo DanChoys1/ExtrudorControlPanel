@@ -56,6 +56,8 @@ public class Recalculates : MonoBehaviour
 
     [SerializeField] private CollectData collectData;
 
+    [SerializeField] private TMP_Text resLabel;
+
     private QPT_DIE_Adapter _qdAdapter =  new QPT_DIE_Adapter();
 
     void Start()
@@ -164,44 +166,45 @@ public class Recalculates : MonoBehaviour
 
     async void RecalcOutDataAsync()
     {
-        //_qdAdapter.initData.data.N_       = Math.Max(double.Parse(_shnekSpeed.text), 0.1);
-        //_qdAdapter.initData.cyl[0].T_W_k_ = double.Parse(_temp1.text);
-        //_qdAdapter.initData.cyl[1].T_W_k_ = double.Parse(_temp2.text);
-        await Task.Run(() => _qdAdapter.init());
+        ////Uno
+        ////_qdAdapter.initData.data.N_       = Math.Max(double.Parse(_shnekSpeed.text), 0.1);
+        ////_qdAdapter.initData.cyl[0].T_W_k_ = double.Parse(_temp1.text);
+        ////_qdAdapter.initData.cyl[1].T_W_k_ = double.Parse(_temp2.text);
+        //await Task.Run(() => _qdAdapter.init());
 
-        ///////////////////////////////////////////
+        /////////////////////////////////////////////
 
-        Train train = _qdAdapter.initData.train;
-        float g = G();
-        //float dG = g / (float)train.G_max * 100 - 100;
-        //if (dG <= 0) dG = Math.Min(g / (float)train.G_min * 100 - 100, 0);
-        float dG = g / (float)Math.Max(train.G0, 1e-5) * 100 - 100;
-        float id = Id();
-        float dId = Math.Max(id / (float)train.Id_max * 100 - 100, 0);
-        float fs = Fs();
-        float dFs = Math.Max(fs / (float)train.Fs_max * 100 - 100, 0);
-        float y = Dmix();
-        float dY = y / (float)Math.Max(train.Is0, 1e-5) * 100 - 100;
+        //Train train = _qdAdapter.initData.train;
+        //float g = G();
+        ////float dG = g / (float)train.G_max * 100 - 100;
+        ////if (dG <= 0) dG = Math.Min(g / (float)train.G_min * 100 - 100, 0);
+        //float dG = g / (float)Math.Max(train.G0, 1e-5) * 100 - 100;
+        //float id = Id();
+        //float dId = Math.Max(id / (float)train.Id_max * 100 - 100, 0);
+        //float fs = Fs();
+        //float dFs = Math.Max(fs / (float)train.Fs_max * 100 - 100, 0);
+        //float y = Dmix();
+        //float dY = y / (float)Math.Max(train.Is0, 1e-5) * 100 - 100;
 
-        _resTextInstructor.text = $"{g:f2}\n" +
-                                  $"{id:f2}\n" +
-                                  $"{fs:f2}\n" +
-                                  $"{y:f2}\n";
+        //_resTextInstructor.text = $"{g:f2}\n" +
+        //                          $"{id:f2}\n" +
+        //                          $"{fs:f2}\n" +
+        //                          $"{y:f2}\n";
 
-        _XGraphInstructor.SetData(_qdAdapter.qpt.XZ.Last());
-        _PGraphInstructor.SetData(_qdAdapter.qpt.PZ.Last());
-        _TGraphInstructor.SetData(_qdAdapter.qpt.TZ.Last());
+        //_XGraphInstructor.SetData(_qdAdapter.qpt.XZ.Last());
+        //_PGraphInstructor.SetData(_qdAdapter.qpt.PZ.Last());
+        //_TGraphInstructor.SetData(_qdAdapter.qpt.TZ.Last());
 
-        List<Vector> mt = new List<Vector>();
-        List<Vector> tout = new List<Vector>();
-        for (int i = 0; i <= _qdAdapter.die.Res.n_Q; i++)
-        {
-            mt.Add(  new((float)(_qdAdapter.die.M_Q[i] * 1e2), (float)_qdAdapter.die.Res.MP[i]));
-            tout.Add(new((float)(_qdAdapter.die.M_Q[i] * 1e2), (float)_qdAdapter.die.M_P[i]));
-        }
-        _WorkDotGraphInstructor.SetData(mt, tout);
+        //List<Vector> mt = new List<Vector>();
+        //List<Vector> tout = new List<Vector>();
+        //for (int i = 0; i <= _qdAdapter.die.Res.n_Q; i++)
+        //{
+        //    mt.Add(  new((float)(_qdAdapter.die.M_Q[i] * 1e2), (float)_qdAdapter.die.Res.MP[i]));
+        //    tout.Add(new((float)(_qdAdapter.die.M_Q[i] * 1e2), (float)_qdAdapter.die.M_P[i]));
+        //}
+        //_WorkDotGraphInstructor.SetData(mt, tout);
 
-        _XPTTableInstructor.SetData(_qdAdapter.qpt.ZXPT.Last());
+        //_XPTTableInstructor.SetData(_qdAdapter.qpt.ZXPT.Last());
 
         /// Show G Id Fs Y Trend Graphs
 
@@ -226,6 +229,12 @@ public class Recalculates : MonoBehaviour
         //    y,
         //    dY
         //});
+
+        // Dual
+        Debug.Log("1");
+        await Task.Run(() => _qdAdapter.initDual());
+        Debug.Log(_qdAdapter.qptDual.text);
+        resLabel.text = _qdAdapter.qptDual.text;
     }
 
     private float G()
