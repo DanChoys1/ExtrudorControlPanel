@@ -231,10 +231,16 @@ public class Recalculates : MonoBehaviour
         //});
 
         // Dual
-        Debug.Log("1");
+        //Debug.Log("1");
         await Task.Run(() => _qdAdapter.initDual());
-        Debug.Log(_qdAdapter.qptDual.text);
-        resLabel.text = _qdAdapter.qptDual.text;
+        //Debug.Log(_qdAdapter.qptDual.text);
+        resLabel.text = _qdAdapter.qptDual.Fin_Q_text;
+        _XPTTableInstructor.SetData(_qdAdapter.qptDual.ZXPT.Last());
+
+        _PGraphInstructor.SetData(_qdAdapter.qptDual.PZ.Last(),
+            _qdAdapter.qptDual.PZ_a.Last());
+        _TGraphInstructor.SetData(_qdAdapter.qptDual.TZ.Last(),
+            _qdAdapter.qptDual.TZ_a.Last());
     }
 
     private float G()

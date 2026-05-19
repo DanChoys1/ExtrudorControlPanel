@@ -29,7 +29,7 @@ public class WindowGraph : MonoBehaviour
     private float? yMaxLineVal = null;
     private float? yMinLineVal = null;
 
-    private void Awake()
+    private void initFunc()
     {
         gameObjectList = new List<GameObject>();
 
@@ -42,6 +42,11 @@ public class WindowGraph : MonoBehaviour
         {
             transform.Find("graphName").GetComponent<Text>().text = graphName;
         }
+    }
+
+    private void Awake()
+    {
+        initFunc();
     }
 
     public void SetYMaxMinLine(float max, float min)

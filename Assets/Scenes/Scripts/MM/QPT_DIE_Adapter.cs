@@ -37,8 +37,20 @@ namespace Extruder
             try
             {
                 qptDual = new QPTDual();
+                rectanDual = new RectanDual();
+
                 qptDual.init(id);
+
+                Debug.Log("1");
                 id.resDual = qptDual.Res;
+                rectanDual.init(id);
+
+                Debug.Log("2");
+                id.dop_dataDual.Q = rectanDual.Q_f * 1e-6;
+                qptDual.init(id, true);
+
+                Debug.Log("3");
+
             }
             catch (Exception e)
             {
@@ -57,6 +69,7 @@ namespace Extruder
         public DIE die = new DIE();
 
         public QPTDual qptDual = new QPTDual();
+        public RectanDual rectanDual = new RectanDual();
 
     }
 }

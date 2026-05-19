@@ -5,7 +5,7 @@ namespace Program
 {
     class RectanDual
     {
-        public RectanDual(){}
+        public RectanDual() { }
 
         public void init(InitData iniData)
         {
@@ -47,24 +47,24 @@ namespace Program
             // { Перевод миллиметров в метры }
             for (i = 0; i <= S_K.Num_S; i++)
             {
-                S_K.S[i].H_st   = S_K.S[i].H_st     / 1000.0;
-                S_K.S[i].H_fin  = S_K.S[i].H_fin    / 1000.0;
-                S_K.S[i].W_st   = S_K.S[i].W_st     / 1000.0;
-                S_K.S[i].W_fin  = S_K.S[i].W_fin    / 1000.0;
-                S_K.S[i].L_sect = S_K.S[i].L_sect   / 1000.0;
+                S_K.S[i].H_st = S_K.S[i].H_st / 1000.0;
+                S_K.S[i].H_fin = S_K.S[i].H_fin / 1000.0;
+                S_K.S[i].W_st = S_K.S[i].W_st / 1000.0;
+                S_K.S[i].W_fin = S_K.S[i].W_fin / 1000.0;
+                S_K.S[i].L_sect = S_K.S[i].L_sect / 1000.0;
             }
             XM[0] = 0;
             HM[0] = S_K.S[0].H_st;
             WM[0] = S_K.S[0].W_st;
             for (i = 1; i <= S_K.Num_S; i++)
             {
-                HM[i] = S_K.S[i-1].H_fin;
-                WM[i] = S_K.S[i-1].W_fin;
-                XM[i] = XM[i - 1] + S_K.S[i-1].L_sect;
+                HM[i] = S_K.S[i - 1].H_fin;
+                WM[i] = S_K.S[i - 1].W_fin;
+                XM[i] = XM[i - 1] + S_K.S[i - 1].L_sect;
             }
             T_eq = Res.T_eqv;
             t_ind_eq = Res.t_in_eq;
-            E_R = RES_V.E_R_int[0]; // TODO было 1, я заменил на 0
+            E_R = RES_V.E_R_int[1];
             Console.Write("Данные о состоянии материала перед головкой переданные,");
             Console.WriteLine(" программой расчета червячной машины:");
             Console.WriteLine("       i       Q        p       T");
@@ -73,14 +73,14 @@ namespace Program
             {
                 Console.WriteLine($"{i} {Res.MQ[i]} {Res.MP[i]} {Res.MT[i]}");
             }
-            
+
             Step(-1, 1, ref DAT.iR, DAT.k_R, DAT.k_R, ref yR);
             Step(0, 1, ref DAT.N, DAT.k_Al, DAT.k_Al, ref Alfa);
             n_Omit = 1;
             jM = 0;
             for (i = 1; i <= S_K.Num_S; i++)
             {
-                jM = jM + S_K.S[i-1].n_cykle;
+                jM = jM + S_K.S[i - 1].n_cykle;
             }
             if (jM > 40) n_Omit = (int)(jM / 40) + 1;
             MZ[0] = 0;
@@ -92,9 +92,9 @@ namespace Program
             x_M[0] = 0;
             do
             {
-                jM = jM + S_K.S[j-1].n_cykle;
-                MZ[j] = MZ[j - 1] + S_K.S[j-1].L_sect;
-                d_X = S_K.S[j-1].L_sect / S_K.S[j-1].n_cykle;
+                jM = jM + S_K.S[j - 1].n_cykle;
+                MZ[j] = MZ[j - 1] + S_K.S[j - 1].L_sect;
+                d_X = S_K.S[j - 1].L_sect / S_K.S[j - 1].n_cykle;
                 do
                 {
                     i_pred = i;
@@ -106,10 +106,10 @@ namespace Program
                         iX_M[k] = i;
                         x_M[k] = x_M[k - 1] + d_X * (i - i_pred);
                     }
-                } 
+                }
                 while (i != jM);
                 j = j + 1;
-            } 
+            }
             while (j <= S_K.Num_S);
 
             // { Начало циклов по объемному расходу 
@@ -137,21 +137,21 @@ namespace Program
                 // { Начало циклоа по секциям головки }
                 for (jZ = 1; jZ <= S_K.Num_S; jZ++)
                 {
-                    if (jZ == 1) T[0] = S_K.S[jZ-1].T_up;
+                    if (jZ == 1) T[0] = S_K.S[jZ - 1].T_up;
                     else T[0] = T_enter;
-                    T[DAT.N] = S_K.S[jZ-1].T_up;
+                    T[DAT.N] = S_K.S[jZ - 1].T_up;
                     TR[0] = T[0];
                     TR[DAT.iR] = T[DAT.N];
-                    j = S_K.S[jZ-1].n_cykle;
+                    j = S_K.S[jZ - 1].n_cykle;
                     Z = MZ[jZ - 1];
                     DZ = (MZ[jZ] - Z) / j;
-                    DH = (S_K.S[jZ-1].H_st - S_K.S[jZ-1].H_fin) / 2.0;
+                    DH = (S_K.S[jZ - 1].H_st - S_K.S[jZ - 1].H_fin) / 2.0;
                     TETA = Math.Abs(Math.Atan(DH / (MZ[jZ] - Z)));
                     sn = Math.Sin(TETA);
                     cs = Math.Cos(TETA);
 
                     // { Начало циклов вдоль секции }
-                    for (j = 0; j <= S_K.S[jZ-1].n_cykle; j++)
+                    for (j = 0; j <= S_K.S[jZ - 1].n_cykle; j++)
                     {
                         hj = LineInterpol(Z, 0, S_K.Num_S, XM, HM, ref pr) / 2.0;
                         wj = LineInterpol(Z, 0, S_K.Num_S, XM, WM, ref pr);
@@ -189,9 +189,9 @@ namespace Program
                         {
                             for (i = 0; i <= DAT.N; i++)
                             {
-                                dTau[i] = Math.Sqrt(Math.Pow(DZ - rk1 * (Math.Cos(s1[i] / rk1) - cs) + 
-                                                                rk2 * (Math.Cos(s2[i] / rk2) - cs), 2) + 
-                                                    Math.Pow(rk1 * Math.Sin(s1[i] / rk1) - 
+                                dTau[i] = Math.Sqrt(Math.Pow(DZ - rk1 * (Math.Cos(s1[i] / rk1) - cs) +
+                                                                rk2 * (Math.Cos(s2[i] / rk2) - cs), 2) +
+                                                    Math.Pow(rk1 * Math.Sin(s1[i] / rk1) -
                                                                 rk2 * Math.Sin(s2[i] / rk2), 2));
                                 if (i > 0) dY[i] = (s2[i] - s2[i - 1] + s1[i] - s1[i - 1]) / 2;
                             }
@@ -201,7 +201,7 @@ namespace Program
                                 dTau[i] = dTau[i] / (Alfa[i] - Alfa[i - 1]);
                             }
                         }
-                        else 
+                        else
                         {
                             PRdTau();
                         }
@@ -212,9 +212,9 @@ namespace Program
                         {
                             qvT[i] = (qv1[i] + qv1[i - 1] + qv2[i] + qv2[i - 1]) / 4.0;
                             time[i] = time[i] + dTau[i];
-                            time_eq[i] = time_eq[i] + 
-                                            Math.Exp(E_R / (T_eq + 273) / ((T[i] + T[i - 1]) / 2 + 273) * 
-                                                        ((T[i] + T[i - 1]) / 2 - T_eq)) * 
+                            time_eq[i] = time_eq[i] +
+                                            Math.Exp(E_R / (T_eq + 273) / ((T[i] + T[i - 1]) / 2 + 273) *
+                                                        ((T[i] + T[i - 1]) / 2 - T_eq)) *
                                             dTau[i];
                             Vulcan[i_Q] = Vulcan[i_Q] + time_eq[i] / t_ind_eq * 100 * (Alfa[i] - Alfa[i - 1]);
                         }
@@ -224,7 +224,7 @@ namespace Program
                         {
                             TR[i] = Spline(yR[i], 0, DAT.N, y_Alpha, T, ref pr);
                         }
-                     m1:
+                    m1:
                         dp1 = dp;
                         Tau1f = Tau1;
                         rk1 = rk2;
@@ -273,7 +273,7 @@ namespace Program
             d_f = 0.0001;
             Chorda(M_Q[0], (M_Q[Res.n_Q] - M_Q[0]), 0.001, ref Q_f, ref d_f, Dif);
             i = S_K.Num_S;
-            s_fin = SEC[i-1].W_fin * SEC[i-1].H_fin / 100;
+            s_fin = SEC[i - 1].W_fin * SEC[i - 1].H_fin / 100;
             v_fin = Q_f / s_fin * 0.6;
             pr = FixPr;
             T_f = Spline(Q_f, 0, Res.n_Q, M_Q, T_out, ref pr);
@@ -353,11 +353,11 @@ namespace Program
                 v = (k > 30) && !transit;
             }
             while (!(((Math.Abs(x2 - x1) < tx) && transit) || (Math.Abs(y) <= ty) || v));
-            
+
             if (v)
                 transit = true;
 
-        met:
+            met:
             return;
         }
 
@@ -521,8 +521,8 @@ namespace Program
         public double Spline(double x, int iH, int iK, double[] xM, double[] yM, ref double Pr)
         {
             bool a, b, z;
-            int i=0, j;
-            double r=0, d;
+            int i = 0, j;
+            double r = 0, d;
 
 
             a = x > xM[iH];
@@ -569,7 +569,7 @@ namespace Program
         public void kSpline(int iH, int iK, double[] xM, double[] yM, ref double[] a, ref double[] b, ref double[] c, ref double[] d)
         {
             int i;
-            double dx1=0, dx2, dy1=0, dy2;
+            double dx1 = 0, dx2, dy1 = 0, dy2;
             double[] MD = new double[60];
             double[] BD = new double[60];
 
@@ -645,9 +645,9 @@ namespace Program
             }
         }
 
-        public void TRTV(int G0, int GN, int N, 
-            ref double[] T, double[] DY, double[] Q, double[] DTAU, 
-            double T0, double TN, double AL0, double ALN, 
+        public void TRTV(int G0, int GN, int N,
+            ref double[] T, double[] DY, double[] Q, double[] DTAU,
+            double T0, double TN, double AL0, double ALN,
             Func<double, int, double> A, Func<double, int, double> L, Func<double, double> SIGMA)
         {
             int i, j, c;
@@ -702,7 +702,7 @@ namespace Program
                     DT[i] = DT[i] - M[i] * TN;
                 }
 
-                m1: r2 = r4;
+            m1: r2 = r4;
                 r1 = r6;
                 r7 = r8;
             }
@@ -867,20 +867,20 @@ namespace Program
             return c;
         }
 
-        public int 
+        public int
             i, j, k, k_Min, k_Max;
-        public bool 
+        public bool
             transit;
-        public int 
+        public int
             jM, i_Q, n_Omit;
 
-        public double 
-            MaxFo, y0, Q, Qt, hj, dp, dp1, Mu, pr, 
-            Tau1, Tau2, wj, rk1, rk2, p, pf, Tau1f, 
-            dFo, qvMax, T_enter, fMin, fMax, 
+        public double
+            MaxFo, y0, Q, Qt, hj, dp, dp1, Mu, pr,
+            Tau1, Tau2, wj, rk1, rk2, p, pf, Tau1f,
+            dFo, qvMax, T_enter, fMin, fMax,
             sMin, sMax, dMin, dMax, E_R, T_eq, t_ind_eq;
 
-        public double[] 
+        public double[]
             yR = new double[61], Alfa = new double[61], TR = new double[61], TimeFin = new double[61],
             vX = new double[61], qv = new double[61], XM = new double[61], HM = new double[61],
             WM = new double[61], y_Alpha = new double[61], s1 = new double[61],
@@ -893,17 +893,17 @@ namespace Program
             H_M = new double[61], W_M = new double[61], p_M = new double[61],
             MZ = new double[61], Vulcan = new double[61], I3 = new double[61];
 
-        public double[] 
-            aSpline=new double[61],bSpline=new double[61],
-            cSpline=new double[61],dSpline=new double[61];
+        public double[]
+            aSpline = new double[61], bSpline = new double[61],
+            cSpline = new double[61], dSpline = new double[61];
 
         public int[] iX_M = new int[61];
 
         public int i_pred, jZ;
-        public double 
-            d_X, Z, DZ, DH, TETA, sn, cs, sum, s_fin, v_fin, 
+        public double
+            d_X, Z, DZ, DH, TETA, sn, cs, sum, s_fin, v_fin,
             d_f, Q_f, T_f, Vul_f, Vul_f_S, p_f, T_f_in;
-            
+
         public SECTIONS[] SEC = new SECTIONS[30];
         public RES_VUL RES_V;
 
@@ -913,7 +913,7 @@ namespace Program
         public VULCAN VUL;
 
         const double eps = 1E-08;
-        const int FixPr=4738;
+        const int FixPr = 4738;
 
         // RESULT Res_p_q;
     }

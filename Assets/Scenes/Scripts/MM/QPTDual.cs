@@ -1,5 +1,8 @@
 using System;
 using TypesDual;
+using System.Numerics;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Program
 {
@@ -7,13 +10,13 @@ namespace Program
     {
         public QPTDual(){}
 
-        public void init(InitData iniData)
+        public void init(InitData iniData, bool isAloneQ = false)
         {
             init(iniData.dataDual, iniData.sectDual, iniData.sect_aDual,
                           iniData.cylinderDual, iniData.vulcanDual, iniData.dop_dataDual);
         }
 
-        public void init(DATA_ data_, SECT[] sect, SECT_a[] sect_a, CYLINDER[] cylinder, VULCAN vulcan, DOP_DATA dop_data)
+        public void init(DATA_ data_, SECT[] sect, SECT_a[] sect_a, CYLINDER[] cylinder, VULCAN vulcan, DOP_DATA dop_data, bool isAloneQ = false)
         {
             DataRec = data_;
             sect.CopyTo(SCT, 0);
@@ -38,7 +41,7 @@ namespace Program
 
             OrderSCT();
             Initial();
-            Put_QM();
+            Put_QM(isAloneQ);
             for (i_Alfa = 0; i_Alfa <= DOP.n_Alfa; i_Alfa++)
             {
                 TETA = 1 - DOP.Alfa_min - (DOP.Alfa_max - DOP.Alfa_min) * i_Alfa / DOP.n_Alfa;
@@ -281,6 +284,53 @@ namespace Program
                 Energy = (Energy_1 * Q1 + Energy * Q2) / 2 / Q_M;
                 Energy_C = (Energy_C * Q1 + Ener_C_1 * Q2) / 2 / Q_M;
                 Fin_Q();
+
+                //Данные для графика
+                PM_LIST.Add(PM);
+                ZM_LIST.Add(ZM);
+                TM_LIST.Add(TM);
+                //X_OTN_LIST.Add(X_OTN);
+
+                PZ.Add(new List<Vector2>());
+                TZ.Add(new List<Vector2>());
+                //XZ.Add(new List<Vector2>());
+                ZXPT.Add(new List<List<double>>());
+                for (int i = 0; i < k + 1; ++i)
+                {
+                    PZ.Last().Add(new Vector2((float)(ZM[i] * 1e3), (float)PM[i]));
+                    TZ.Last().Add(new Vector2((float)(ZM[i] * 1e3), (float)TM[i]));
+                    //XZ.Last().Add(new Vector2((float)(ZM[i] * 1e3), (float)X_PL_LIST.Last()[i] * 1000));
+                    ZXPT.Last().Add(new List<double>
+                    {
+                        ZM[i] * 1e3,
+                        //XZ.Last().Last().Y,
+                        PZ.Last().Last().Y,
+                        TZ.Last().Last().Y,
+                    });
+                }
+
+                PM_a_LIST.Add(PM_a);
+                ZM_a_LIST.Add(ZM_a);
+                TM_a_LIST.Add(TM_a);
+                //X_OTN_a_LIST.Add(X_OTN_a);
+
+                PZ_a.Add(new List<Vector2>());
+                TZ_a.Add(new List<Vector2>());
+                //XZ_a.Add(new List<Vector2>());
+                ZXPT_a.Add(new List<List<double>>());
+                for (int i = 0; i < k + 1; ++i)
+                {
+                    PZ_a.Last().Add(new Vector2((float)(ZM_a[i] * 1e3), (float)PM_a[i]));
+                    TZ_a.Last().Add(new Vector2((float)(ZM_a[i] * 1e3), (float)TM_a[i]));
+                    //XZ_a.Last().Add(new Vector2((float)(ZM_a[i] * 1e3), (float)X_PL_a_LIST.Last()[i] * 1000));
+                    ZXPT_a.Last().Add(new List<double>
+                    {
+                        ZM_a[i] * 1e3,
+                        //XZ_a.Last().Last().Y,
+                        PZ_a.Last().Last().Y,
+                        TZ_a.Last().Last().Y,
+                    });
+                }
             }
             Remain();
         }
@@ -443,9 +493,19 @@ namespace Program
             Res.MVUL = new double[61];
         }
 
-        void Put_QM() //{ Выбор сечения червяка для определения Q машины в целом }
+        void Put_QM( bool isAloneQ = false) //{ Выбор сечения червяка для определения Q машины в целом }
         {
             double fi, uz;
+
+            if (isAloneQ)
+            {
+                Q_M = DOP.Q;
+                DOP.n_Alfa = 0;
+                DOP.Alfa_max = 0;
+                DOP.Alfa_min = 0;
+                return;
+            }
+
             for (i_Alfa = 0; i_Alfa <= DOP.n_Alfa; i_Alfa++) //по первому червяку 
             {
                 TETA = 1 - DOP.Alfa_min - (DOP.Alfa_max - DOP.Alfa_min) * i_Alfa / DOP.n_Alfa;
@@ -1207,7 +1267,7 @@ namespace Program
 
             // Befor_final();
             string s1 = (2 * Q_M * 1E+6).ToString("0.0");
-            text += $"ПАРАМЕТРЫ ПЕРЕРАБОТКИ ПРИ ОБЪЕМНОМ РАСХОДЕ Q = {s1} см^3/с\n"
+            Fin_Q_text = $"ПАРАМЕТРЫ ПЕРЕРАБОТКИ ПРИ ОБЪЕМНОМ РАСХОДЕ Q = {s1} см^3/с\n"
             + "Температура, градусы Цельсия:\n"
             + $"         Температура материала, питающего машину:            T(0) = {DataRec.T_St.ToString()}\n"
             + $"         Температура материала при сходе с червяка:             T(L) = {T.ToString()}\n"
@@ -1216,18 +1276,17 @@ namespace Program
             + $"         Температура теплоносителя в полости 2-го червяка:   T_SW = {DataRec.T_W_s_a.ToString()}\n"
             + $"         Ее изменение за время пребывания в полости червяка: {dT_W_s.ToString()}\n"
             + "         Температура теплоносителя в секцях корпуса:\n";
-            
             for (int iCYL = 1; iCYL <= nCYL; iCYL++)
             {
-                text += T_W_k.ToString() + " ";
+                Fin_Q_text += T_W_k.ToString() + " ";
             }
-            text += "\n";
-            text += "         Ее изменение за времена пребывания теплоносителя в секцях корпуса:\n      ";
+            Fin_Q_text += "\n";
+            Fin_Q_text += "         Ее изменение за времена пребывания теплоносителя в секцях корпуса:\n      ";
             for (int iCYL = 1; iCYL <= nCYL; iCYL++)
             {
-                text += CYL[iCYL-1].dT_W_k.ToString() + " ";
+                Fin_Q_text += CYL[iCYL - 1].dT_W_k.ToString() + " ";
             }
-            text += "Интегральные характеристики:\n\n"
+            Fin_Q_text += "Интегральные характеристики:\n\n"
             + "         Объем материала в машине :                     V =" + (Volume * 1000).ToString() + " дм^3\n"
             + "         Массовый расход материала:                     G =" + (Ro * 2 * Q_M * 3600).ToString() + " кг/ч\n"
             + "         Масса материала в машине :                     m = " + (Volume * Ro).ToString() + " кг\n"
@@ -1235,8 +1294,10 @@ namespace Program
             + "         Плотность поглощенной механической энергии: " + (Energy * 1E-6).ToString() + " МДж/м^3\n"
             +"         Повышение теплосодержания:                    " + (Energy_C * 1E-6).ToString() + " МДж/м^3\n";
             Res.MVUL[i_Alfa] = time_eqv / DataRec.t_in_eq * 100;
-            text += "         Израсходованная доля индукционного периода:   " + Res.MVUL[i_Alfa].ToString() + " %\n";
+            Fin_Q_text += "         Израсходованная доля индукционного периода:   " + Res.MVUL[i_Alfa].ToString() + " %\n";
+            text += Fin_Q_text;
         }
+
 
         // void Befor_final()
         // {
@@ -1382,6 +1443,30 @@ namespace Program
 
         public double[] Lambda = new double[41], Lambda_a = new double[41]; // от 0 до 40
 
+        //Рузультаты
         public string text = "";
+        public string Fin_Q_text = "";
+
+        public List<double[]> PM_LIST = new List<double[]>();
+        public List<double[]> TM_LIST = new List<double[]>();
+        public List<double[]> ZM_LIST = new List<double[]>();
+        //public List<double[]> X_OTN_LIST = new List<double[]>();
+        //public List<List<double>> X_PL_LIST = new List<List<double>>();
+        public List<double[]> PM_a_LIST = new List<double[]>();
+        public List<double[]> TM_a_LIST = new List<double[]>();
+        public List<double[]> ZM_a_LIST = new List<double[]>();
+        //public List<double[]> X_OTN_LIST = new List<double[]>();
+        //public List<List<double>> X_PL_LIST = new List<List<double>>();
+
+        public List<List<Vector2>> PZ = new List<List<Vector2>>();
+        public List<List<Vector2>> TZ = new List<List<Vector2>>();
+        //public List<List<Vector2>> XZ = new List<List<Vector2>>();
+        public List<List<Vector2>> PZ_a = new List<List<Vector2>>();
+        public List<List<Vector2>> TZ_a = new List<List<Vector2>>();
+        //public List<List<Vector2>> XZ = new List<List<Vector2>>();
+
+        public List<List<List<double>>> ZXPT = new List<List<List<double>>>();
+        public List<List<List<double>>> ZXPT_a = new List<List<List<double>>>();
+
     }
 }
