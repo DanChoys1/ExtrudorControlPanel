@@ -34,8 +34,8 @@ namespace Extruder
 
         public void initDual(InitData id)
         {
-            try
-            {
+            //try
+            //{
                 qptDual = new QPTDual();
                 rectanDual = new RectanDual();
 
@@ -51,11 +51,11 @@ namespace Extruder
 
                 Debug.Log("3");
 
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e.Message);
-            }
+            //}
+            //catch (Exception e)
+            //{
+                //Debug.Log(e.Message);
+            //}
         }
 
         public void initDual()

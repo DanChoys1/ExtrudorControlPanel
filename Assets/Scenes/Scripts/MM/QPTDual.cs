@@ -1,14 +1,14 @@
-using System;
-using TypesDual;
 using System.Numerics;
+using TypesDual;
 using System.Linq;
+using System;
 using System.Collections.Generic;
 
 namespace Program
 {
     class QPTDual
     {
-        public QPTDual(){}
+        public QPTDual() { }
 
         public void init(InitData iniData, bool isAloneQ = false)
         {
@@ -27,17 +27,17 @@ namespace Program
 
             // READdata
             // { Назначенте переменной для числа секций первого червяка }
-            nSect = DataRec.nS_1+DataRec.nS_2;
+            nSect = DataRec.nS_1 + DataRec.nS_2;
 
             // { Назначенте переменной для числа секций второго червяка }
-            nSect_a = DataRec.nS_1a+DataRec.nS_2a;
+            nSect_a = DataRec.nS_1a + DataRec.nS_2a;
 
             // { Назначенте отдельной переменной для числа секций корпуса }
             nCYL = DataRec.nS_korp;
 
             // AddedData
-            DOP.k_V_air = DOP.k_V_air/100.0; // { Перевод % в относит.единицы }
-            f = 1-DOP.k_V_air;
+            DOP.k_V_air = DOP.k_V_air / 100.0; // { Перевод % в относит.единицы }
+            f = 1 - DOP.k_V_air;
 
             OrderSCT();
             Initial();
@@ -59,7 +59,7 @@ namespace Program
                 q_int_s = 0;
                 for (i = 1; i <= nCYL; i++)
                 {
-                    CYL[i-1].q_int_k = 0;
+                    CYL[i - 1].q_int_k = 0;
                 }
                 nPrint = (int)Math.Round(nLm_a / 15.0);
                 ic = nPrint;
@@ -73,17 +73,17 @@ namespace Program
                 Volume = 0;
                 for (iSect = 1; iSect <= nSect; iSect++)
                 {
-                    if (SCT[iSect-1].S_Type == 1)
+                    if (SCT[iSect - 1].S_Type == 1)
                     {
-                        //Console.Write("Задайте соотношение объемных расходов: Q1/Q2 = ?");
+                        Console.Write("Задайте соотношение объемных расходов: Q1/Q2 = ?");
                         //Q1Q2 = double.Parse(Console.ReadLine());
                         Q1Q2 = 0.85;
                         Q1 = 2 * Q_M / (1 + 1 / Q1Q2);
                         Q2 = 2 * Q_M / (1 + Q1Q2);
-                        Mix.Q1Q2[iSect-1, i_Alfa] = Q1Q2;
+                        Mix.Q1Q2[iSect - 1, i_Alfa] = Q1Q2;
                         Mix.Lambda[iSect] = Lambda[iSect];
                         Start_SCT(iSect);
-                        for (i = 0; i <= SCT[iSect-1].n_cykle; i++)
+                        for (i = 0; i <= SCT[iSect - 1].n_cykle; i++)
                         {
                             i_0(iSect);
                             if (i > 0)
@@ -105,10 +105,10 @@ namespace Program
                                 }
                                 i_Var_3(iSect);
                             }
-                            if (ic == nPrint || i == SCT[iSect-1].n_cykle)
+                            if (ic == nPrint || i == SCT[iSect - 1].n_cykle)
                             {
                                 ic = 0;
-                                text += $"{Lm * 1000} {p * 1E-6} {T} {H * 1000} {W * 1000} {Q1Q2}\n";
+                                Console.WriteLine($"{Lm * 1000} {p * 1E-6} {T} {H * 1000} {W * 1000} {Q1Q2}");
                                 k++;
                                 ZM[k] = Lm;
                                 TM[k] = T;
@@ -120,27 +120,27 @@ namespace Program
                     }
                     else
                     {
-                        //Console.Write("Задайте соотношение объемных расходов: Q1/Q2 = ?");
+                        Console.Write("Задайте соотношение объемных расходов: Q1/Q2 = ?");
                         //Q1Q2 = double.Parse(Console.ReadLine());
                         Q1Q2 = 0.85;
                         Q1 = 2 * Q_M / (1 + 1 / Q1Q2);
                         Q2 = 2 * Q_M / (1 + Q1Q2);
-                        Mix.Q1Q2[iSect-1, i_Alfa] = Q1Q2;
+                        Mix.Q1Q2[iSect - 1, i_Alfa] = Q1Q2;
                         Mix.Lambda[iSect] = Lambda[iSect];
                         Ro = Ro_M;
                         Lam_T = Lam_T_M;
-                        dLm = SCT[iSect-1].L_sect / SCT[iSect-1].n_cykle;
-                        for (i = 0; i <= SCT[iSect-1].n_cykle; i++)
+                        dLm = SCT[iSect - 1].L_sect / SCT[iSect - 1].n_cykle;
+                        for (i = 0; i <= SCT[iSect - 1].n_cykle; i++)
                         {
                             i_0(iSect);
                             if (i > 0)
                             {
                                 i_Var_Smooth(iSect, i);
                             }
-                            if (ic == nPrint || i == SCT[iSect-1].n_cykle)
+                            if (ic == nPrint || i == SCT[iSect - 1].n_cykle)
                             {
                                 ic = 0;
-                                text += $"{Lm * 1000} {p * 1E-6} {T} {(rH - rB) * 1000}    - {Q1Q2}\n";
+                                Console.WriteLine($"{Lm * 1000} {p * 1E-6} {T} {(rH - rB) * 1000}    - {Q1Q2}");
                                 k++;
                                 ZM[k] = Lm;
                                 TM[k] = T;
@@ -180,7 +180,7 @@ namespace Program
                 q_int_s = 0;
                 for (i = 1; i <= nCYL; i++)
                 {
-                    CYL[i-1].q_int_k = 0;
+                    CYL[i - 1].q_int_k = 0;
                 }
                 nPrint = (int)Math.Round(nLm / 15.0);
                 ic = nPrint;
@@ -193,15 +193,15 @@ namespace Program
                 i_print = 0;
                 Volume = 0;
                 Mix.i_Sect = 1;
-                Q1Q2 = Mix.Q1Q2[1-1, i_Alfa];
+                Q1Q2 = Mix.Q1Q2[1 - 1, i_Alfa];
                 Q1 = 2 * Q_M / (1 + 1 / Q1Q2);
                 Q2 = 2 * Q_M / (1 + Q1Q2);
                 for (iSect = 1; iSect <= nSect_a; iSect++)
                 {
-                    if (SCT_a[iSect-1].S_Type == 1)
+                    if (SCT_a[iSect - 1].S_Type == 1)
                     {
                         Start_SCT(iSect);
-                        for (i = 0; i <= SCT_a[iSect-1].n_cykle; i++)
+                        for (i = 0; i <= SCT_a[iSect - 1].n_cykle; i++)
                         {
                             i_0(iSect);
                             if (i > 0)
@@ -222,10 +222,10 @@ namespace Program
                                 }
                                 i_Var_3(iSect);
                             }
-                            if (ic == nPrint || i == SCT_a[iSect-1].n_cykle)
+                            if (ic == nPrint || i == SCT_a[iSect - 1].n_cykle)
                             {
                                 ic = 0;
-                                text += $"{Lm * 1000} {p * 1E-6} {T} {H * 1000} {W * 1000} {Q1Q2}\n";
+                                Console.WriteLine($"{Lm * 1000} {p * 1E-6} {T} {H * 1000} {W * 1000} {Q1Q2}");
                                 k++;
                                 ZM_a[k] = Lm;
                                 TM_a[k] = T;
@@ -236,7 +236,7 @@ namespace Program
                             if (Math.Abs(Lm - Mix.Lambda[Mix.i_Sect]) < dLm)
                             {
                                 Mix.i_Sect++;
-                                Q1Q2 = Mix.Q1Q2[Mix.i_Sect-1, i_Alfa];
+                                Q1Q2 = Mix.Q1Q2[Mix.i_Sect - 1, i_Alfa];
                                 Q1 = 2 * Q_M / (Q1Q2 + 1) * Q1Q2;
                                 Q2 = 2 * Q_M / (1 + Q1Q2);
                             }
@@ -246,18 +246,18 @@ namespace Program
                     {
                         Ro = Ro_M;
                         Lam_T = Lam_T_M;
-                        dLm = SCT_a[iSect-1].L_sect / SCT_a[iSect-1].n_cykle;
-                        for (int i = 0; i <= SCT_a[iSect-1].n_cykle; i++)
+                        dLm = SCT_a[iSect - 1].L_sect / SCT_a[iSect - 1].n_cykle;
+                        for (i = 0; i <= SCT_a[iSect - 1].n_cykle; i++)
                         {
                             i_0(iSect);
                             if (i > 0)
                             {
                                 i_Var_Smooth(iSect, i);
                             }
-                            if (ic == nPrint || i == SCT_a[iSect-1].n_cykle)
+                            if (ic == nPrint || i == SCT_a[iSect - 1].n_cykle)
                             {
                                 ic = 0;
-                                text += $"{Lm * 1000} {p * 1E-6} {T} {(rH - rB) * 1000}    - {Q1Q2}\n";
+                                Console.WriteLine($"{Lm * 1000} {p * 1E-6} {T} {(rH - rB) * 1000}    - {Q1Q2}");
                                 k++;
                                 ZM_a[k] = Lm;
                                 TM_a[k] = T;
@@ -270,7 +270,7 @@ namespace Program
                                 Mix.i_Sect++;
                                 if (Mix.i_Sect < nSect)
                                 {
-                                    Q1Q2 = Mix.Q1Q2[Mix.i_Sect-1, i_Alfa];
+                                    Q1Q2 = Mix.Q1Q2[Mix.i_Sect - 1, i_Alfa];
                                     Q1 = 2 * Q_M / (1 + 1 / Q1Q2);
                                     Q2 = 2 * Q_M / (1 + Q1Q2);
                                 }
@@ -337,36 +337,36 @@ namespace Program
 
         void OrderSCT() //{ Расстановка секций двух червяков }
         {
-            int i=0,j=0;
-            for(j=1; j <= nSect_a; ++j)
+            int i = 0, j = 0;
+            for (j = 1; j <= nSect_a; ++j)
             {
                 i = 0;
                 do
                 {
-                    i = i+1;
-                    if(SCT_a[i-1].Order==j)
+                    i = i + 1;
+                    if (SCT_a[i - 1].Order == j)
                     {
-                        SCT_a[25-1] = SCT_a[j-1];
-                        SCT_a[j-1] = SCT_a[i-1];
-                        SCT_a[i-1] = SCT_a[25-1];
+                        SCT_a[25 - 1] = SCT_a[j - 1];
+                        SCT_a[j - 1] = SCT_a[i - 1];
+                        SCT_a[i - 1] = SCT_a[25 - 1];
                     }
                 }
-                while (!((SCT_a[i-1].Order==j) || (i==nSect_a)));
+                while (!((SCT_a[i - 1].Order == j) || (i == nSect_a)));
             }
-            for (j=1; j <= nSect; ++j)
+            for (j = 1; j <= nSect; ++j)
             {
                 i = 0;
                 do
                 {
-                    i = i+1;
-                    if (SCT[i-1].Order==j)
+                    i = i + 1;
+                    if (SCT[i - 1].Order == j)
                     {
-                        SCT[25-1] = SCT[j-1];
-                        SCT[j-1] = SCT[i-1];
-                        SCT[i-1] = SCT[25-1];
+                        SCT[25 - 1] = SCT[j - 1];
+                        SCT[j - 1] = SCT[i - 1];
+                        SCT[i - 1] = SCT[25 - 1];
                     }
                 }
-                while (!((SCT[i-1].Order==j) || (i==nSect)));
+                while (!((SCT[i - 1].Order == j) || (i == nSect)));
             }
         }
 
@@ -378,55 +378,54 @@ namespace Program
             //{ Для первого червяка }
             for (i = 1; i <= nSect; i++)
             {
-                SCT[i-1].D_st = SCT[i-1].D_st / 1000.0;
-                SCT[i-1].D_fin = SCT[i-1].D_fin / 1000.0;
-                SCT[i-1].L_sect = SCT[i-1].L_sect / 1000.0;
-                SCT[i-1].H_st = SCT[i-1].H_st / 1000.0;
-                SCT[i-1].H_fin = SCT[i-1].H_fin / 1000.0; //{ Перевод из м в мм }
-                if (SCT[i-1].S_Type == 1)
+                SCT[i - 1].D_st = SCT[i - 1].D_st / 1000.0;
+                SCT[i - 1].D_fin = SCT[i - 1].D_fin / 1000.0;
+                SCT[i - 1].L_sect = SCT[i - 1].L_sect / 1000.0;
+                SCT[i - 1].H_st = SCT[i - 1].H_st / 1000.0;
+                SCT[i - 1].H_fin = SCT[i - 1].H_fin / 1000.0; //{ Перевод из м в мм }
+                if (SCT[i - 1].S_Type == 1)
                 {
-                    SCT[i-1].step_ = SCT[i-1].step_ / 1000.0;
-                    SCT[i-1].e_st = SCT[i-1].e_st / 1000.0;
-                    SCT[i-1].e_fin = SCT[i-1].e_fin / 1000.0;
-                    SCT[i-1].delta = SCT[i-1].delta / 1000.0;
-                    SCT[i-1].W_a = SCT[i-1].W_a / 1000.0; //{ Перевод из м в мм }
-                    SCT[i-1].d_Fi = SCT[i-1].d_Fi / 180.0 * Math.PI; //{ Перевод из градусов в радианы }
+                    SCT[i - 1].step_ = SCT[i - 1].step_ / 1000.0;
+                    SCT[i - 1].e_st = SCT[i - 1].e_st / 1000.0;
+                    SCT[i - 1].e_fin = SCT[i - 1].e_fin / 1000.0;
+                    SCT[i - 1].delta = SCT[i - 1].delta / 1000.0;
+                    SCT[i - 1].W_a = SCT[i - 1].W_a / 1000.0; //{ Перевод из м в мм }
+                    SCT[i - 1].d_Fi = SCT[i - 1].d_Fi / 180.0 * Math.PI; //{ Перевод из градусов в радианы }
                 }
-                L = L + SCT[i-1].L_sect; //{ Расчет длины рабочей части первого червяка }
+                L = L + SCT[i - 1].L_sect; //{ Расчет длины рабочей части первого червяка }
                 Lambda[i] = L; //{ Разбивка длины первого червяка на секции }
             }
             L_a = 0;
             Lambda_a[0] = 0; //{ Для второго червяка }
             for (i = 1; i <= nSect_a; i++)
             {
-                SCT_a[i-1].D_st = SCT_a[i-1].D_st / 1000.0;
-                SCT_a[i-1].D_fin = SCT_a[i-1].D_fin / 1000.0;
-                SCT_a[i-1].L_sect = SCT_a[i-1].L_sect / 1000.0;
-                SCT_a[i-1].H_st = SCT_a[i-1].H_st / 1000.0;
-                SCT_a[i-1].H_fin = SCT_a[i-1].H_fin / 1000.0; // { Перевод из м в мм }
-                if (SCT_a[i-1].S_Type == 1)
+                SCT_a[i - 1].D_st = SCT_a[i - 1].D_st / 1000.0;
+                SCT_a[i - 1].D_fin = SCT_a[i - 1].D_fin / 1000.0;
+                SCT_a[i - 1].L_sect = SCT_a[i - 1].L_sect / 1000.0;
+                SCT_a[i - 1].H_st = SCT_a[i - 1].H_st / 1000.0;
+                SCT_a[i - 1].H_fin = SCT_a[i - 1].H_fin / 1000.0; // { Перевод из м в мм }
+                if (SCT_a[i - 1].S_Type == 1)
                 {
-                    SCT_a[i-1].step_ = SCT_a[i-1].step_ / 1000.0;
-                    SCT_a[i-1].e_st = SCT_a[i-1].e_st / 1000.0;
-                    SCT_a[i-1].e_fin = SCT_a[i-1].e_fin / 1000.0;
-                    SCT_a[i-1].delta = SCT_a[i-1].delta / 1000.0;
-                    SCT_a[i-1].W_a = SCT_a[i-1].W_a / 1000.0; // { Перевод из м в мм }
-                    SCT_a[i-1].d_Fi = SCT_a[i-1].d_Fi / 180.0 * Math.PI; //{ Перевод из градусов в радианы }
+                    SCT_a[i - 1].step_ = SCT_a[i - 1].step_ / 1000.0;
+                    SCT_a[i - 1].e_st = SCT_a[i - 1].e_st / 1000.0;
+                    SCT_a[i - 1].e_fin = SCT_a[i - 1].e_fin / 1000.0;
+                    SCT_a[i - 1].delta = SCT_a[i - 1].delta / 1000.0;
+                    SCT_a[i - 1].W_a = SCT_a[i - 1].W_a / 1000.0; // { Перевод из м в мм }
+                    SCT_a[i - 1].d_Fi = SCT_a[i - 1].d_Fi / 180.0 * Math.PI; //{ Перевод из градусов в радианы }
                 }
-                L_a = L_a + SCT_a[i-1].L_sect; //{Расчет длины рабочей части второго червяка }
+                L_a = L_a + SCT_a[i - 1].L_sect; //{Расчет длины рабочей части второго червяка }
                 Lambda_a[i] = L_a; // { Разбивка длины второго червяка на секции }
             }
-            DataRec.Lam_kor = new double[41];
             DataRec.Lam_kor[0] = 0;
             L_CYL = 0; //{ Длина корпуса }
             for (i = 1; i <= nCYL; i++)
             {
-                CYL[i-1].L_sec = CYL[i-1].L_sec / 1000.0;
-                CYL[i-1].Del_k_ = CYL[i-1].Del_k_ / 1000.0; //{Перевод мм в м}
-                L_CYL = L_CYL + CYL[i-1].L_sec; //{ Подсчет общей длины корпуса }
-                CYL[i-1].Q_W_k_ = CYL[i-1].Q_W_k_ / 1000.0 / 60.0; //{ Перевод дм^3/мин в см^3/с }
+                CYL[i - 1].L_sec = CYL[i - 1].L_sec / 1000.0;
+                CYL[i - 1].Del_k_ = CYL[i - 1].Del_k_ / 1000.0; //{Перевод мм в м}
+                L_CYL = L_CYL + CYL[i - 1].L_sec; //{ Подсчет общей длины корпуса }
+                CYL[i - 1].Q_W_k_ = CYL[i - 1].Q_W_k_ / 1000.0 / 60.0; //{ Перевод дм^3/мин в см^3/с }
                 //{ Сохранение границ секций корпуса }
-                DataRec.Lam_kor[i-1] = L_CYL * 1000.0; //{ Размерность мм }
+                DataRec.Lam_kor[i - 1] = L_CYL * 1000.0; //{ Размерность мм }
             }
             n_Eta = 60; //{ Число шагов интегрирования по глубине канала }
             for (i = 0; i <= n_Eta; i++) //{ Назначение чисел циклов интегрирования по секциям 2-го червяка }
@@ -437,12 +436,12 @@ namespace Program
             j = 0;
             for (i = 1; i <= nSect_a; i++)
             {
-                SCT_a[i-1].n_cykle = (int)Math.Round(nLm_a * SCT_a[i-1].L_sect / L_a);
-                if (SCT_a[i-1].n_cykle == 0)
+                SCT_a[i - 1].n_cykle = (int)Math.Round(nLm_a * SCT_a[i - 1].L_sect / L_a);
+                if (SCT_a[i - 1].n_cykle == 0)
                 {
-                    SCT_a[i-1].n_cykle = 1;
+                    SCT_a[i - 1].n_cykle = 1;
                 }
-                j = j + SCT_a[i-1].n_cykle;
+                j = j + SCT_a[i - 1].n_cykle;
             }
             if (j > nLm_a) //{ Назначение чисел циклов интегрирования по секциям 1-го червяка }
             {
@@ -452,12 +451,12 @@ namespace Program
             j = 0;
             for (i = 1; i <= nSect; i++)
             {
-                SCT[i-1].n_cykle = (int)Math.Round(nLm * SCT[i-1].L_sect / L);
-                if (SCT[i-1].n_cykle == 0)
+                SCT[i - 1].n_cykle = (int)Math.Round(nLm * SCT[i - 1].L_sect / L);
+                if (SCT[i - 1].n_cykle == 0)
                 {
-                    SCT[i-1].n_cykle = 1;
+                    SCT[i - 1].n_cykle = 1;
                 }
-                j = j + SCT[i-1].n_cykle;
+                j = j + SCT[i - 1].n_cykle;
             }
             if (j > nLm)
             {
@@ -483,17 +482,9 @@ namespace Program
             Ro_M = Ro;
             Lam_T_M = Lam_T;
             Mu0 = Mu0_temp;
-
-            Mix.Q1Q2 = new double[28, 7];
-            Mix.Lambda = new double[29];
-
-            Res.MQ = new double[61]; 
-            Res.MP = new double[61];
-            Res.MT = new double[61]; 
-            Res.MVUL = new double[61];
         }
 
-        void Put_QM( bool isAloneQ = false) //{ Выбор сечения червяка для определения Q машины в целом }
+        void Put_QM(bool isAloneQ) //{ Выбор сечения червяка для определения Q машины в целом }
         {
             double fi, uz;
 
@@ -511,26 +502,26 @@ namespace Program
                 TETA = 1 - DOP.Alfa_min - (DOP.Alfa_max - DOP.Alfa_min) * i_Alfa / DOP.n_Alfa;
                 for (i = 1; i <= nSect; i++)
                 {
-                    if (SCT[i-1].S_Type == 1)
+                    if (SCT[i - 1].S_Type == 1)
                     {
-                        D = SCT[i-1].D_st;
+                        D = SCT[i - 1].D_st;
                         pd = Math.PI * D;
                         u = pd * N / 60.0;
-                        fi = Math.Atan(SCT[i-1].step_ / pd);
+                        fi = Math.Atan(SCT[i - 1].step_ / pd);
                         uz = u * Math.Cos(fi);
-                        W_st = pd * Math.Sin(fi) / SCT[i-1].n_Line - SCT[i-1].e_st * Math.Cos(fi);
-                        S_st = SCT[i-1].H_st * W_st * SCT[i-1].n_Line;
-                        W_fin = pd * Math.Sin(fi) / SCT[i-1].n_Line - SCT[i-1].e_fin * Math.Cos(fi);
-                        S_Fin = SCT[i-1].H_fin * W_fin * SCT[i-1].n_Line;
+                        W_st = pd * Math.Sin(fi) / SCT[i - 1].n_Line - SCT[i - 1].e_st * Math.Cos(fi);
+                        S_st = SCT[i - 1].H_st * W_st * SCT[i - 1].n_Line;
+                        W_fin = pd * Math.Sin(fi) / SCT[i - 1].n_Line - SCT[i - 1].e_fin * Math.Cos(fi);
+                        S_Fin = SCT[i - 1].H_fin * W_fin * SCT[i - 1].n_Line;
                         if (i == 1 || S_st < SQ)
                         {
                             SQ = S_st;
-                            Q_M = (1 - TETA) * uz * W_st * SCT[i-1].H_st * SCT[i-1].n_Line / 2.0;
+                            Q_M = (1 - TETA) * uz * W_st * SCT[i - 1].H_st * SCT[i - 1].n_Line / 2.0;
                         }
                         if (S_Fin < SQ)
                         {
                             SQ = S_Fin;
-                            Q_M = (1 - TETA) * uz * W_fin * SCT[i-1].H_fin * SCT[i-1].n_Line / 2.0;
+                            Q_M = (1 - TETA) * uz * W_fin * SCT[i - 1].H_fin * SCT[i - 1].n_Line / 2.0;
                         }
                     }
                 }
@@ -540,10 +531,10 @@ namespace Program
 
         public void Table_Titul()
         {
-            text += "Удельное давление, температура материала и " +
-                            $"геометрия каналапри объемной производительности машины Q={2*Q_M*1E+6}\n" +
+            Console.WriteLine("Удельное давление, температура материала и " +
+                            $"геометрия каналапри объемной производительности машины Q={2 * Q_M * 1E+6}\n" +
                             "For a Screw Number 1                       For a Screw Number 2\n" +
-                            "Z    p      T      H    W   Q1/Q2          Z    p      T      H    W   Q1/Q2\n";
+                            "Z    p      T      H    W   Q1/Q2          Z    p      T      H    W   Q1/Q2\n");
         }
 
         void Start_SCT(int i_SCT)
@@ -552,27 +543,27 @@ namespace Program
             Lam_T = Lam_T_M;
             if (SCR_Num == 1)
             {
-                D = SCT[i_SCT-1].D_st;
+                D = SCT[i_SCT - 1].D_st;
             }
             else
             {
-                D = SCT_a[i_SCT-1].D_st;
+                D = SCT_a[i_SCT - 1].D_st;
             }
             if (SCR_Num == 1)
             {
-                dLm = SCT[i_SCT-1].L_sect / SCT[i_SCT-1].n_cykle;
+                dLm = SCT[i_SCT - 1].L_sect / SCT[i_SCT - 1].n_cykle;
             }
             else
             {
-                dLm = SCT_a[i_SCT-1].L_sect / SCT_a[i_SCT-1].n_cykle;
+                dLm = SCT_a[i_SCT - 1].L_sect / SCT_a[i_SCT - 1].n_cykle;
             }
             if (SCR_Num == 1)
             {
-                nL = SCT[i_SCT-1].n_Line;
+                nL = SCT[i_SCT - 1].n_Line;
             }
             else
             {
-                nL = SCT_a[i_SCT-1].n_Line;
+                nL = SCT_a[i_SCT - 1].n_Line;
             }
             pd = Math.PI * D;
             st = stl(Lm, SCR_Num);
@@ -588,11 +579,11 @@ namespace Program
             H = Ht(Lm, SCR_Num);
             if (SCR_Num == 1)
             {
-                g_ = uX * SCT[i_SCT-1].delta / 2.0;
+                g_ = uX * SCT[i_SCT - 1].delta / 2.0;
             }
             else
             {
-                g_ = uX * SCT_a[i_SCT-1].delta / 2.0;
+                g_ = uX * SCT_a[i_SCT - 1].delta / 2.0;
             }
             Q_delta0 = a_ * g_;
             Q_delta = Q_delta0;
@@ -604,21 +595,21 @@ namespace Program
         {
             if (Scr_Num == 1)
             {
-                return SCT[iSect-1].step_;
+                return SCT[iSect - 1].step_;
             }
             else
             {
-                return SCT_a[iSect-1].step_;
+                return SCT_a[iSect - 1].step_;
             }
         }
 
         void i_0(int i_SCT)
         {
             Mu0 = Mu0_temp;
-            if (((SCR_Num == 1) && (SCT[i_SCT-1].Monolit != 1) &&
-                (((SCT[i_SCT-1].S_Type == 1) && (i_SCT == 1)) || (SCT[i_SCT-1].S_Type == 2))) ||
-                ((SCR_Num == 2) && (SCT_a[i_SCT-1].Monolit != 1) &&
-                (((SCT_a[i_SCT-1].S_Type == 1) && (i_SCT == 1)) || (SCT_a[i_SCT-1].S_Type == 2))))
+            if (((SCR_Num == 1) && (SCT[i_SCT - 1].Monolit != 1) &&
+                (((SCT[i_SCT - 1].S_Type == 1) && (i_SCT == 1)) || (SCT[i_SCT - 1].S_Type == 2))) ||
+                ((SCR_Num == 2) && (SCT_a[i_SCT - 1].Monolit != 1) &&
+                (((SCT_a[i_SCT - 1].S_Type == 1) && (i_SCT == 1)) || (SCT_a[i_SCT - 1].S_Type == 2))))
             {
                 Mu0 /= 1000.0;
                 Ro *= f;
@@ -645,7 +636,7 @@ namespace Program
 
         void i_Var(int i_SCT)
         {
-            CYL[iCYL-1].q_int_k += q_Wk * Math.PI * (D + 2 * Del_k) * dLm;
+            CYL[iCYL - 1].q_int_k += q_Wk * Math.PI * (D + 2 * Del_k) * dLm;
             q_int_s += q_Ws * Math.PI * (D - 2 * H - 2 * DataRec.Del_s) * dLm;
             Lm += dLm;
             H = Ht(Lm, SCR_Num);
@@ -661,9 +652,9 @@ namespace Program
                 dQ_delta = 0.01 * Q_B;
             MuEf_Fix = Mu * Math.Exp((m - 1) * Math.Log(u / H));
             if (SCR_Num == 1)
-                delt = SCT[i_SCT-1].delta;
+                delt = SCT[i_SCT - 1].delta;
             else
-                delt = SCT_a[i_SCT-1].delta;
+                delt = SCT_a[i_SCT - 1].delta;
             Mu_delta = Mu0 * Math.Exp(-b * (T_korp - T0)) * Math.Exp((m - 1) * Math.Log(u / delt));
             b_ = st * delt * delt * delt / (12 * Mu_delta * nL * sn * (e * cs + delt));
             if (SCR_Num == 1)
@@ -695,9 +686,9 @@ namespace Program
             else
                 sign_dp = dp_dz / Math.Abs(dp_dz);
             if (SCR_Num == 1)
-                Wa = SCT[iSect-1].W_a;
+                Wa = SCT[iSect - 1].W_a;
             else
-                Wa = SCT_a[iSect-1].W_a;
+                Wa = SCT_a[iSect - 1].W_a;
             if (dp_dz > 0)
                 dp_dz = (nL * Q_B * fd - QM - a_ * g_) / (nL * (Q_B - Q) * fp / dp_dz + a_ * b_ + Wa * b_a) * sign_dp;
             Q_delta = a_ * (b_ * dp_dz + g_);
@@ -723,9 +714,9 @@ namespace Program
             d_time = dVolume / QM;
             T = T + (dn + W * (Al_korp * (T_korp - T) + Al_screw * (T_screw - T)) - dp_dz * Q) / Q * a_T / Lam_T * dz;
             if (SCR_Num == 1)
-                Mnlit = SCT[iSect-1].Monolit;
+                Mnlit = SCT[iSect - 1].Monolit;
             else
-                Mnlit = SCT_a[iSect-1].Monolit;
+                Mnlit = SCT_a[iSect - 1].Monolit;
             if (Mnlit == 1)
                 Energy = Energy + dn * dz * nL / QM;
             Energy_C = (T - T_Start) * Lam_T / a_T;
@@ -791,11 +782,11 @@ namespace Program
                 v = (k > 30) && !transit;
             }
             while (!(((Math.Abs(x2 - x1) < tx) && transit) || (Math.Abs(y) <= ty) || v));
-            
+
             if (v)
                 transit = true;
 
-        met:
+            met:
             return;
         }
 
@@ -812,7 +803,7 @@ namespace Program
             Q_B_X = H * uX / 2;
             Q_ut = Q_delta / a_;
             AL_X = Q_ut / Q_B_X;
-            
+
             if (i == 1)
                 MuEf_a();
 
@@ -835,13 +826,13 @@ namespace Program
                 IterEnd = (itera == 40) || (Del < 0.002);
                 for (j = 0; j <= n_Eta; j++)
                     Mu_ef[j] = Mu_eff[j];
-            } 
+            }
             while (!IterEnd);
 
             Qj_delta = Q_delta;
             Q_delta = a_ * (b_ * dp_dz + g_);
             b_a = st * H * H * H / (12 * Mu_a * nL * sn * (e * cs + H));
-            Q_a = SCT_a[iSect-1].W_a * b_a * dp_dz;
+            Q_a = SCT_a[iSect - 1].W_a * b_a * dp_dz;
 
             return (Q_delta - Qj_delta) / Q_B;
         }
@@ -859,17 +850,17 @@ namespace Program
             }
             if (SCR_Num == 1)
             {
-                Dst = SCT[i_SCT-1].D_st;
-                Dfin = SCT[i_SCT-1].D_fin;
-                nCykle = SCT[i_SCT-1].n_cykle;
-                Mnlit = SCT[i_SCT-1].Monolit;
+                Dst = SCT[i_SCT - 1].D_st;
+                Dfin = SCT[i_SCT - 1].D_fin;
+                nCykle = SCT[i_SCT - 1].n_cykle;
+                Mnlit = SCT[i_SCT - 1].Monolit;
             }
             else
             {
-                Dst = SCT_a[i_SCT-1].D_st;
-                Dfin = SCT_a[i_SCT-1].D_fin;
-                nCykle = SCT_a[i_SCT-1].n_cykle;
-                Mnlit = SCT_a[i_SCT-1].Monolit;
+                Dst = SCT_a[i_SCT - 1].D_st;
+                Dfin = SCT_a[i_SCT - 1].D_fin;
+                nCykle = SCT_a[i_SCT - 1].n_cykle;
+                Mnlit = SCT_a[i_SCT - 1].Monolit;
             }
             D = Dst + i * (Dfin - Dst) / nCykle;
             Lm += dLm;
@@ -940,13 +931,13 @@ namespace Program
         {
             if (Scr_Num == 1)
             {
-                return SCT[iSect-1].e_st + (SCT[iSect-1].e_fin - SCT[iSect-1].e_st) / 
-                        SCT[iSect-1].L_sect * (Lm - Lambda[iSect - 1]);
+                return SCT[iSect - 1].e_st + (SCT[iSect - 1].e_fin - SCT[iSect - 1].e_st) /
+                        SCT[iSect - 1].L_sect * (Lm - Lambda[iSect - 1]);
             }
             else
             {
-                return SCT_a[iSect-1].e_st + (SCT_a[iSect-1].e_fin - SCT_a[iSect-1].e_st) / 
-                        SCT_a[iSect-1].L_sect * (Lm - Lambda_a[iSect - 1]);
+                return SCT_a[iSect - 1].e_st + (SCT_a[iSect - 1].e_fin - SCT_a[iSect - 1].e_st) /
+                        SCT_a[iSect - 1].L_sect * (Lm - Lambda_a[iSect - 1]);
             }
         }
 
@@ -954,13 +945,13 @@ namespace Program
         {
             if (Scr_Num == 1)
             {
-                return SCT[iSect-1].H_st + (SCT[iSect-1].H_fin - SCT[iSect-1].H_st) / 
-                        SCT[iSect-1].L_sect * (Lm - Lambda[iSect - 1]);
+                return SCT[iSect - 1].H_st + (SCT[iSect - 1].H_fin - SCT[iSect - 1].H_st) /
+                        SCT[iSect - 1].L_sect * (Lm - Lambda[iSect - 1]);
             }
             else
             {
-                return SCT_a[iSect-1].H_st + (SCT_a[iSect-1].H_fin - SCT_a[iSect-1].H_st) / 
-                            SCT_a[iSect-1].L_sect * (Lm - Lambda_a[iSect - 1]);
+                return SCT_a[iSect - 1].H_st + (SCT_a[iSect - 1].H_fin - SCT_a[iSect - 1].H_st) /
+                            SCT_a[iSect - 1].L_sect * (Lm - Lambda_a[iSect - 1]);
             }
         }
 
@@ -972,14 +963,14 @@ namespace Program
             do
             {
                 iCYL++;
-                DLINA += CYL[iCYL-1].L_sec;
-            } 
+                DLINA += CYL[iCYL - 1].L_sec;
+            }
             while (!(DLINA >= Lm || iCYL == nCYL));
 
-            AL_W_k = CYL[iCYL-1].Al_W_k_;
-            Del_k = CYL[iCYL-1].Del_k_;
-            T_W_k = CYL[iCYL-1].T_W_k_;
-            Q_W_k = CYL[iCYL-1].Q_W_k_;
+            AL_W_k = CYL[iCYL - 1].Al_W_k_;
+            Del_k = CYL[iCYL - 1].Del_k_;
+            T_W_k = CYL[iCYL - 1].T_W_k_;
+            Q_W_k = CYL[iCYL - 1].Q_W_k_;
             pr = AL_W_k * Del_k / DataRec.Lam_k + AL_W_k / Al_korp;
             TB_k = (T + pr * T_W_k) / (pr + 1);
             q_Wk = AL_W_k * (TB_k - T_W_k);
@@ -1023,7 +1014,7 @@ namespace Program
                 {
                     Mu_ef[j] = Mu_eff[j];
                 }
-            } 
+            }
             while (!IterEnd);
         }
 
@@ -1047,9 +1038,9 @@ namespace Program
 
         double E_R_Fluent(double time_eqv)
         {
-            double E_R = VUL.E_R_int[0]; // TODO было 1, я заменил на 0
+            double E_R = VUL.E_R_int[1];
 
-            for (int i = 0; i < VUL.n_inter; i++)
+            for (int i = 1; i <= VUL.n_inter; i++)
             {
                 if (time_eqv >= VUL.t_eq_int[i])
                 {
@@ -1070,7 +1061,7 @@ namespace Program
 
         void Int_i(ref double I0, ref double I1, ref double I2)
         {
-            double f1=0, f2=0, f3=0, f4=0, f5=0, f6=0, d=0;
+            double f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0, f6 = 0, d = 0;
             int i;
 
             I0 = 0;
@@ -1140,7 +1131,7 @@ namespace Program
         }
 
         void iter_smooth()
-        {   
+        {
             if (i == 1)
             {
                 MuEf_a();
@@ -1171,7 +1162,7 @@ namespace Program
                 {
                     Mu_ef[j] = Mu_eff[j];
                 }
-            } 
+            }
             while (!IterEnd);
         }
 
@@ -1191,8 +1182,8 @@ namespace Program
 
         void Int_5(ref double I1, ref double I2, ref double I3, ref double I4, ref double I5)
         {
-            double f1=0, f2=0, f3=0, f4=0, f5=0, f6=0, f7=0, 
-                    f8=0, f9=0, f10=0, f11=0, f12=0, d=0, a=0, b=0;
+            double f1 = 0, f2 = 0, f3 = 0, f4 = 0, f5 = 0, f6 = 0, f7 = 0,
+                    f8 = 0, f9 = 0, f10 = 0, f11 = 0, f12 = 0, d = 0, a = 0, b = 0;
             int i;
             I1 = 0;
             I2 = 0;
@@ -1259,19 +1250,20 @@ namespace Program
         {
             for (iCYL = 1; iCYL <= nCYL; iCYL++)
             {
-                CYL[iCYL-1].dT_W_k = CYL[iCYL-1].q_int_k / Q_W_k * CYL[iCYL-1].a_W_k_ / CYL[iCYL-1].Lam_W_k_;
+                CYL[iCYL - 1].dT_W_k = CYL[iCYL - 1].q_int_k / Q_W_k * CYL[iCYL - 1].a_W_k_ / CYL[iCYL - 1].Lam_W_k_;
             }
 
             dT_W_s1 = q_int_s1 / DataRec.Q_W_s * DataRec.a_W / DataRec.Lam_W;
             dT_W_s = q_int_s / DataRec.Q_W_s_a * DataRec.a_W_a / DataRec.Lam_W_a;
 
+            Console.WriteLine("Press <ENTER> to go on");
             // Befor_final();
             string s1 = (2 * Q_M * 1E+6).ToString("0.0");
             Fin_Q_text = $"ПАРАМЕТРЫ ПЕРЕРАБОТКИ ПРИ ОБЪЕМНОМ РАСХОДЕ Q = {s1} см^3/с\n"
             + "Температура, градусы Цельсия:\n"
             + $"         Температура материала, питающего машину:            T(0) = {DataRec.T_St.ToString()}\n"
             + $"         Температура материала при сходе с червяка:             T(L) = {T.ToString()}\n"
-            + $"         Температура теплоносителя в полости 1-го червяка:   T_SW = { DataRec.T_W_s.ToString()}\n"
+            + $"         Температура теплоносителя в полости 1-го червяка:   T_SW = {DataRec.T_W_s.ToString()}\n"
             + $"         Ее изменение за время пребывания в полости червяка: {dT_W_s1.ToString()}\n"
             + $"         Температура теплоносителя в полости 2-го червяка:   T_SW = {DataRec.T_W_s_a.ToString()}\n"
             + $"         Ее изменение за время пребывания в полости червяка: {dT_W_s.ToString()}\n"
@@ -1292,12 +1284,11 @@ namespace Program
             + "         Масса материала в машине :                     m = " + (Volume * Ro).ToString() + " кг\n"
             + "         Среднее время пребывания материала в машине:   t = " + (Volume / (2 * Q_M) / 60).ToString() + " мин\n"
             + "         Плотность поглощенной механической энергии: " + (Energy * 1E-6).ToString() + " МДж/м^3\n"
-            +"         Повышение теплосодержания:                    " + (Energy_C * 1E-6).ToString() + " МДж/м^3\n";
+            + "         Повышение теплосодержания:                    " + (Energy_C * 1E-6).ToString() + " МДж/м^3\n";
             Res.MVUL[i_Alfa] = time_eqv / DataRec.t_in_eq * 100;
             Fin_Q_text += "         Израсходованная доля индукционного периода:   " + Res.MVUL[i_Alfa].ToString() + " %\n";
             text += Fin_Q_text;
         }
-
 
         // void Befor_final()
         // {
@@ -1390,54 +1381,54 @@ namespace Program
 
 
         public int
-            nLm,nLm_a,i,j,k,s,DriverVar,ModeVar,ErrorNumber,nL,ic,nPrint,test,
-            n_Eta,nCYL,iCYL,itera,nSect,nSect_a,i_Alfa,iS_korp,
+            nLm, nLm_a, i, j, k, s, DriverVar, ModeVar, ErrorNumber, nL, ic, nPrint, test,
+            n_Eta, nCYL, iCYL, itera, nSect, nSect_a, i_Alfa, iS_korp,
             SCR_Num, iSect;
 
         public double
-            D,L,L_a,H0,H,TETA,e,u,fi,Mu0,T0,Mu,b,m,T,Lm,p,uX,uZ,db,Q_M,W,AL_Z,
-            AL_X,cs,sn,fd,fp,ff,tkz,tkx,z,pr,f1,f2,Ro,MASSA,T_Start,a_T,Lam_T,
-            T_korp,T_screw,Al_korp,Al_screw,pd,st,dz,dn,dLm,I0,I1,I2,I3,I4,I5,
-            Mu_e,fMin,fMax,ffMin,ffMax,Eta_Z,Eta_X,dp_dx,dp_dz,sign_dp,Del,SQ,
-            MuEf_Fix,g_,a_,b_,b_a,Q,Q_B,Q_B_X,Q_ut,Q_a,Mu_a,Mu_delta,func,E_R,
-            Qj_delta,Q_delta,Q_delta0,dQ_delta,tQ_delta,Q_W_k,W_fin,S_st,W_st,
-            S_Fin,rH,rB,Tau_rz_B,Tau_rz_H,Tau_rt_H,Tau_rt_B,AL_W_k,Capacity,N,
-            DLINA,Del_k,T_W_k,TB_k,TB_s,q_Wk,q_Ws,f,L_CYL,Ro_M,q_int_s,dT_W_s,
-            Mu0_temp,S_round,Lam_T_M,Energy,Energy_C,Enrg_fix,Volume,time_eqv,
-            dVolume,time,d_time,TAU,c,Q_total,Q1,Q2;
+            D, L, L_a, H0, H, TETA, e, u, fi, Mu0, T0, Mu, b, m, T, Lm, p, uX, uZ, db, Q_M, W, AL_Z,
+            AL_X, cs, sn, fd, fp, ff, tkz, tkx, z, pr, f1, f2, Ro, MASSA, T_Start, a_T, Lam_T,
+            T_korp, T_screw, Al_korp, Al_screw, pd, st, dz, dn, dLm, I0, I1, I2, I3, I4, I5,
+            Mu_e, fMin, fMax, ffMin, ffMax, Eta_Z, Eta_X, dp_dx, dp_dz, sign_dp, Del, SQ,
+            MuEf_Fix, g_, a_, b_, b_a, Q, Q_B, Q_B_X, Q_ut, Q_a, Mu_a, Mu_delta, func, E_R,
+            Qj_delta, Q_delta, Q_delta0, dQ_delta, tQ_delta, Q_W_k, W_fin, S_st, W_st,
+            S_Fin, rH, rB, Tau_rz_B, Tau_rz_H, Tau_rt_H, Tau_rt_B, AL_W_k, Capacity, N,
+            DLINA, Del_k, T_W_k, TB_k, TB_s, q_Wk, q_Ws, f, L_CYL, Ro_M, q_int_s, dT_W_s,
+            Mu0_temp, S_round, Lam_T_M, Energy, Energy_C, Enrg_fix, Volume, time_eqv,
+            dVolume, time, d_time, TAU, c, Q_total, Q1, Q2;
 
         public double[] // от 0 до 60
-            Eta = new double[61],Mu_ef = new double[61],ZM = new double[61],TM = new double[61],
-            PM = new double[61],Mu_eff = new double[61],M_P = new double[61],r = new double[61],
-            Mu_ef_a = new double[61],ZM_a = new double[61],TM_a = new double[61],
-            PM_a = new double[61],Mu_eff_a = new double[61],M_P_a = new double[61],r_a = new double[61];
+            Eta = new double[61], Mu_ef = new double[61], ZM = new double[61], TM = new double[61],
+            PM = new double[61], Mu_eff = new double[61], M_P = new double[61], r = new double[61],
+            Mu_ef_a = new double[61], ZM_a = new double[61], TM_a = new double[61],
+            PM_a = new double[61], Mu_eff_a = new double[61], M_P_a = new double[61], r_a = new double[61];
 
         public bool
-            IterEnd,transit,VMenuResult,New;
+            IterEnd, transit, VMenuResult, New;
 
         // sZ: NAMEst;
         // sC: COMENTst;
         // Titul_g,Titul_j: StringArr;
 
-        public int i_Menu,j_Menu,i_print;
+        public int i_Menu, j_Menu, i_print;
 
         public RESULT Res = new RESULT();
         public DOP_DATA DOP = new DOP_DATA();
-        public DATA_ DataRec = new DATA_(); 
+        public DATA_ DataRec = new DATA_();
         public SECT[] SCT = new SECT[29]; //= ARRAY[1..28] of RECORD  { ГЕОМЕТРИЯ СЕКЦИЙ ПЕРВОГО ЧЕРВЯКА }
         public SECT_a[] SCT_a = new SECT_a[29]; //=ARRAY[1..28] of RECORD  { ГЕОМЕТРИЯ СЕКЦИЙ ВТОРОГО ЧЕРВЯКА }
         public CYLINDER[] CYL = new CYLINDER[15]; // = ARRAY[1..14] of RECORD
         public VULCAN VUL = new VULCAN();
 
-        public double 
-            delt,Wa,Dst,Dfin;
+        public double
+            delt, Wa, Dst, Dfin;
         public int
-            Mnlit,nCykle;
+            Mnlit, nCykle;
 
         public double
-            Q1Q2,q_int_s1,dT_W_s1,Volume_1,time_1,Energy_1,Ener_C_1;
+            Q1Q2, q_int_s1, dT_W_s1, Volume_1, time_1, Energy_1, Ener_C_1;
 
-        public int X_cursor,Y_cursor;
+        public int X_cursor, Y_cursor;
 
         public MIX_MACRO Mix = new MIX_MACRO();
 
@@ -1467,6 +1458,5 @@ namespace Program
 
         public List<List<List<double>>> ZXPT = new List<List<List<double>>>();
         public List<List<List<double>>> ZXPT_a = new List<List<List<double>>>();
-
     }
 }

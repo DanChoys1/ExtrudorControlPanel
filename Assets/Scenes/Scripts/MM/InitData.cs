@@ -623,6 +623,10 @@ namespace Program
             dataDual.t_op_eq = 540;
             dataDual.space = 10;
 
+            dataDual.Lam_kor = new double[41];
+            dataDual.T_kor = new double[41];
+
+
             // sectDual
             sectDual = new TypesDual.SECT[3];
             sectDual[0].S_Type = 1;
@@ -776,21 +780,21 @@ namespace Program
             // vulcanDual
             vulcanDual.n_inter = 2;
 
-            vulcanDual.i_int = new int[5];
+            vulcanDual.i_int = new int[21];
             vulcanDual.i_int[0] = 0;
             vulcanDual.i_int[1] = 1;
             vulcanDual.i_int[2] = 2;
             vulcanDual.i_int[3] = 3;
             vulcanDual.i_int[4] = 4;
 
-            vulcanDual.t_eq_int = new double[5];
+            vulcanDual.t_eq_int = new double[21];
             vulcanDual.t_eq_int[0] = 0;
             vulcanDual.t_eq_int[1] = 40;
             vulcanDual.t_eq_int[2] = 540;
             vulcanDual.t_eq_int[3] = 81.6;
             vulcanDual.t_eq_int[4] = 81.6;
 
-            vulcanDual.E_R_int = new double[5];
+            vulcanDual.E_R_int = new double[21];
             vulcanDual.E_R_int[0] = 0;
             vulcanDual.E_R_int[1] = 9000;
             vulcanDual.E_R_int[2] = 11000;
