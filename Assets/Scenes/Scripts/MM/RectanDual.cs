@@ -1,6 +1,9 @@
 using System;
 using TypesDual;
 
+using UnityEngine;
+using Vector2 = System.Numerics.Vector2;
+
 namespace Program
 {
     class RectanDual
@@ -17,6 +20,7 @@ namespace Program
             Res = res;
             DAT = dat;
             S_K = s_k;
+            S_K.S = (SECTIONS[])s_k.S.Clone();
             VUL = vul;
 
             RES_V.t_eq_int = new double[VUL.n_inter];
@@ -39,14 +43,17 @@ namespace Program
             j = 1;
             k = j - 1 + k_Min;
 
+            SEC = new SECTIONS[S_K.Num_S];
             for (j = 0; j < S_K.Num_S; j++)
             {
                 SEC[j] = S_K.S[j];
             }
 
             // { Перевод миллиметров в метры }
-            for (i = 0; i <= S_K.Num_S; i++)
+            //for (i = 0; i <= S_K.Num_S; i++)
+            for (i = 0; i < S_K.Num_S; i++) // Оригинально от нуля до == Num_S, хотя SECTIONS от 1. Странно, сделал чтобы только в нормальном интервале было
             {
+                //Debug.Log(i);
                 S_K.S[i].H_st = S_K.S[i].H_st / 1000.0;
                 S_K.S[i].H_fin = S_K.S[i].H_fin / 1000.0;
                 S_K.S[i].W_st = S_K.S[i].W_st / 1000.0;

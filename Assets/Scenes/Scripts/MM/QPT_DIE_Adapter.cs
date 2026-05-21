@@ -34,28 +34,24 @@ namespace Extruder
 
         public void initDual(InitData id)
         {
-            //try
-            //{
+            try
+            {
                 qptDual = new QPTDual();
                 rectanDual = new RectanDual();
 
                 qptDual.init(id);
 
-                Debug.Log("1");
                 id.resDual = qptDual.Res;
                 rectanDual.init(id);
 
-                Debug.Log("2");
                 id.dop_dataDual.Q = rectanDual.Q_f * 1e-6;
                 qptDual.init(id, true);
 
-                Debug.Log("3");
-
-            //}
-            //catch (Exception e)
-            //{
-                //Debug.Log(e.Message);
-            //}
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+            }
         }
 
         public void initDual()

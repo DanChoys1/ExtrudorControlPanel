@@ -623,10 +623,6 @@ namespace Program
             dataDual.t_op_eq = 540;
             dataDual.space = 10;
 
-            dataDual.Lam_kor = new double[41];
-            dataDual.T_kor = new double[41];
-
-
             // sectDual
             sectDual = new TypesDual.SECT[3];
             sectDual[0].S_Type = 1;
@@ -842,7 +838,7 @@ namespace Program
             datDual.k_R = 1.1;
 
             s_kDual.Num_S = 2;
-            s_kDual.S = new TypesDual.SECTIONS[61];
+            s_kDual.S = new TypesDual.SECTIONS[s_kDual.Num_S];
             s_kDual.S[0].Order = 1;
             s_kDual.S[0].n_cykle = 150;
             s_kDual.S[0].W_st = 80;
@@ -861,15 +857,15 @@ namespace Program
             s_kDual.S[1].L_sect = 50;
             s_kDual.S[1].T_up = 90;
             s_kDual.S[1].T_dn = 90;
-            s_kDual.S[3].Order = 3;
-            s_kDual.S[3].n_cykle = 25;
-            s_kDual.S[3].W_st = 170;
-            s_kDual.S[3].W_fin = 200;
-            s_kDual.S[3].H_st = 8;
-            s_kDual.S[3].H_fin = 6;
-            s_kDual.S[3].L_sect = 50;
-            s_kDual.S[3].T_up = 100;
-            s_kDual.S[3].T_dn = 100;
+            //s_kDual.S[3].Order = 3;
+            //s_kDual.S[3].n_cykle = 25;
+            //s_kDual.S[3].W_st = 170;
+            //s_kDual.S[3].W_fin = 200;
+            //s_kDual.S[3].H_st = 8;
+            //s_kDual.S[3].H_fin = 6;
+            //s_kDual.S[3].L_sect = 50;
+            //s_kDual.S[3].T_up = 100;
+            //s_kDual.S[3].T_dn = 100;
         }
     }
 }

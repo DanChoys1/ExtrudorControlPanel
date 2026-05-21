@@ -4,6 +4,9 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 
+using UnityEngine;
+using Vector2 = System.Numerics.Vector2;
+
 namespace Program
 {
     class QPTDual
@@ -25,6 +28,12 @@ namespace Program
             VUL = vulcan;
             DOP = dop_data;
 
+            DataRec.Lam_kor = new double[41];
+            DataRec.T_kor = new double[41];
+            Mix.Q1Q2 = new double[30, 10];
+            Mix.dQ = new double[30, 10];
+            Mix.Lambda = new double[30];
+
             // READdata
             // { Назначенте переменной для числа секций первого червяка }
             nSect = DataRec.nS_1 + DataRec.nS_2;
@@ -41,7 +50,28 @@ namespace Program
 
             OrderSCT();
             Initial();
-            Put_QM(isAloneQ);
+
+            if (isAloneQ)
+            {
+                Q_M = DOP.Q;
+                DOP.n_Alfa = 0;
+                DOP.Alfa_max = 0;
+                DOP.Alfa_min = 0;
+                    
+                Res.MQ = new double[DOP.n_Alfa + 1];
+                Res.MT = new double[DOP.n_Alfa + 1];
+                Res.MP = new double[DOP.n_Alfa + 1];
+                Res.MVUL = new double[DOP.n_Alfa + 1];
+            }
+            else
+            {
+                Res.MQ = new double[DOP.n_Alfa + 1];
+                Res.MT = new double[DOP.n_Alfa + 1];
+                Res.MP = new double[DOP.n_Alfa + 1];
+                Res.MVUL = new double[DOP.n_Alfa + 1];
+                Put_QM();
+            }
+
             for (i_Alfa = 0; i_Alfa <= DOP.n_Alfa; i_Alfa++)
             {
                 TETA = 1 - DOP.Alfa_min - (DOP.Alfa_max - DOP.Alfa_min) * i_Alfa / DOP.n_Alfa;
@@ -484,18 +514,9 @@ namespace Program
             Mu0 = Mu0_temp;
         }
 
-        void Put_QM(bool isAloneQ) //{ Выбор сечения червяка для определения Q машины в целом }
+        void Put_QM() //{ Выбор сечения червяка для определения Q машины в целом }
         {
             double fi, uz;
-
-            if (isAloneQ)
-            {
-                Q_M = DOP.Q;
-                DOP.n_Alfa = 0;
-                DOP.Alfa_max = 0;
-                DOP.Alfa_min = 0;
-                return;
-            }
 
             for (i_Alfa = 0; i_Alfa <= DOP.n_Alfa; i_Alfa++) //по первому червяку 
             {
