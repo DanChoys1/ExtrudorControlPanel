@@ -293,15 +293,15 @@ namespace Program
             pr = FixPr;
             T_f_in = Spline(Q_f, 0, Res.n_Q, M_Q, Res.MT, ref pr);
 
-            Console.WriteLine("РАССЧИТАННЫЕ ПАРАМЕТРЫ ЭКСТРУЗИИ:");
-            Console.WriteLine($"Объемный расход: {Q_f} см^3/с");
-            Console.WriteLine($"Линейная скорость экструдирования профиля: v = {v_fin} м/мин");
-            Console.WriteLine($"Площадь сечения канала головки перед выходом профиля: S = {s_fin} см^2");
-            Console.WriteLine($"Температура смеси при выходе из головки: {T_f} град.Ц");
-            Console.WriteLine($"Температура смеси перед головкой: {T_f_in} град.Ц");
-            Console.WriteLine($"Расходование индукционного периода в машине: {Vul_f_S} %");
-            Console.WriteLine($"Расходование индукционного периода в головке: {Vul_f} %");
-            Console.WriteLine($"Удельное давление перед головкой: p = {p_f} МПа");
+            text = "РАССЧИТАННЫЕ ПАРАМЕТРЫ ЭКСТРУЗИИ:\n";
+            text += $"Объемный расход: {Q_f} см^3/с\n";
+            text += $"Линейная скорость экструдирования профиля: v = {v_fin} м/мин\n";
+            text += $"Площадь сечения канала головки перед выходом профиля: S = {s_fin} см^2\n";
+            text += $"Температура смеси при выходе из головки: {T_f} град.Ц\n";
+            text += $"Температура смеси перед головкой: {T_f_in} град.Ц\n";
+            text += $"Расходование индукционного периода в машине: {Vul_f_S} %\n";
+            text += $"Расходование индукционного периода в головке: {Vul_f} %\n";
+            text += $"Удельное давление перед головкой: p = {p_f} МПа\n";
         }
 
         void Chorda(double x0, double dx, double tx, ref double x, ref double y, Func<double> F)
@@ -921,6 +921,8 @@ namespace Program
 
         const double eps = 1E-08;
         const int FixPr = 4738;
+
+        public string text;
 
         // RESULT Res_p_q;
     }

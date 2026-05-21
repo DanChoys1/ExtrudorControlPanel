@@ -51,6 +51,7 @@ public class Recalculates : MonoBehaviour
     [SerializeField] private WindowGraph    _WorkDotGraphInstructor;
 
     [SerializeField] private TableManager    _XPTTableInstructor;
+    [SerializeField] private TableManager    _XPT_aTableInstructor;
 
     [SerializeField] private TableManager   _logTabelInstructor;
 
@@ -234,13 +235,14 @@ public class Recalculates : MonoBehaviour
         //Debug.Log("1");
         await Task.Run(() => _qdAdapter.initDual());
         //Debug.Log(_qdAdapter.qptDual.text);
-        resLabel.text = _qdAdapter.qptDual.Fin_Q_text;
+        resLabel.text = _qdAdapter.qptDual.Fin_Q_text + "\n" + _qdAdapter.rectanDual.text;
         _XPTTableInstructor.SetData(_qdAdapter.qptDual.ZXPT.Last());
+        _XPT_aTableInstructor.SetData(_qdAdapter.qptDual.ZXPT_a.Last());
 
-        _PGraphInstructor.SetData(_qdAdapter.qptDual.PZ.Last(),
-            _qdAdapter.qptDual.PZ_a.Last());
-        _TGraphInstructor.SetData(_qdAdapter.qptDual.TZ.Last(),
-            _qdAdapter.qptDual.TZ_a.Last());
+        //_PGraphInstructor.SetData(_qdAdapter.qptDual.PZ.Last(),
+            //_qdAdapter.qptDual.PZ_a.Last());
+        //_TGraphInstructor.SetData(_qdAdapter.qptDual.TZ.Last(),
+            //_qdAdapter.qptDual.TZ_a.Last());
     }
 
     private float G()

@@ -1299,7 +1299,7 @@ namespace Program
             {
                 Fin_Q_text += CYL[iCYL - 1].dT_W_k.ToString() + " ";
             }
-            Fin_Q_text += "Интегральные характеристики:\n\n"
+            Fin_Q_text += "\nИнтегральные характеристики:\n"
             + "         Объем материала в машине :                     V =" + (Volume * 1000).ToString() + " дм^3\n"
             + "         Массовый расход материала:                     G =" + (Ro * 2 * Q_M * 3600).ToString() + " кг/ч\n"
             + "         Масса материала в машине :                     m = " + (Volume * Ro).ToString() + " кг\n"
