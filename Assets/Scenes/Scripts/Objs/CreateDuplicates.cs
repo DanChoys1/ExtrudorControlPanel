@@ -53,6 +53,7 @@ public class CreateDuplicates : MonoBehaviour
         newObj.GetComponent<Rigidbody>().drag = Random.value;
         newObj.GetComponent<BoxCollider>().material.bounciness = Random.value;
         newObj.GetComponent<Testure>().transitionValue = transitionValue;
+        Debug.Log(transitionValue);
         newObj.SetActive(true);
 
         Destroy(newObj, destroyDilay);

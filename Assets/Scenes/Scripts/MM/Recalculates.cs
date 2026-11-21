@@ -273,6 +273,7 @@ public class Recalculates : MonoBehaviour
         float dY = y / (float)Math.Max(train.Is0, 1e-5) * 100 - 100;
 
         _createDuplicates.setTransitionValue(id);
+        Debug.Log(id);
 
         /// Show res
         _resText.text = $"{g:f2}\n" +
