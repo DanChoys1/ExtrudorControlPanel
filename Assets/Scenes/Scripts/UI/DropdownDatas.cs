@@ -14,7 +14,10 @@ public class DropdownDatas : Value
 {
     private bool isInit = false;
 
-    static DatabaseCollectData DB = new();
+    // Public, С‡С‚РѕР±С‹ СЂР°СЃС‡С‘С‚РЅС‹Р№ РєРѕРґ (CollectData) РјРѕРі РѕРїСЂРµРґРµР»РёС‚СЊ РјРѕРґРµР»СЊ
+    // СЌРєСЃС‚СЂСѓРґРµСЂР° (ExtruderType в†’ MathModel) РїРѕ РІС‹Р±СЂР°РЅРЅРѕР№ РјР°СЂРєРµ СЌРєСЃС‚СЂСѓРґРµСЂР°,
+    // РёСЃРїРѕР»СЊР·СѓСЏ С‚РѕС‚ Р¶Рµ РµРґРёРЅСЃС‚РІРµРЅРЅС‹Р№ СЌРєР·РµРјРїР»СЏСЂ, С‡С‚Рѕ Рё РІС‹РїР°РґР°СЋС‰РёРµ СЃРїРёСЃРєРё.
+    public static DatabaseCollectData DB = new();
 
     private int currOptIndex = 0;
     private string CurrOptText
@@ -39,7 +42,7 @@ public class DropdownDatas : Value
     private Dictionary<string, Value> currVals = new();
     private Dictionary<string, Dictionary<string, object>> optVals = new();
 
-    [SerializeField] private string newOptionText = "Новый";
+    [SerializeField] private string newOptionText = "пїЅпїЅпїЅпїЅпїЅ";
 
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private TMP_Dropdown dropdown;
@@ -201,7 +204,7 @@ public class DropdownDatas : Value
         }
         else
         {
-            Debug.Log("При AddData не получилось добавить option, скорее всего переданное в AddOption имя empty");
+            Debug.Log("пїЅпїЅпїЅ AddData пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ option, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ AddOption пїЅпїЅпїЅ empty");
         }
     }
 
@@ -283,7 +286,7 @@ public class DropdownDatas : Value
         string newOptName = (string)currVals[designValName].Val;
         if (newOptName != optName && optVals.ContainsKey(newOptName))
         {
-            //EditorUtility.DisplayDialog("Предупреждение", $"Название {newOptName} уже используется!\n Попробуйте другое.", "Хорошо");
+            //EditorUtility.DisplayDialog("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", $"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ {newOptName} пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!\n пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.", "пїЅпїЅпїЅпїЅпїЅпїЅ");
             return;
         }
 
@@ -451,7 +454,7 @@ public class DropdownDatas : Value
 
     private bool ResetChangesMsg()
     {
-        //return EditorUtility.DisplayDialog("Предупреждение", "Изменения не сохранены, продолжить?", "Да", "Нет");
+        //return EditorUtility.DisplayDialog("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?", "пїЅпїЅ", "пїЅпїЅпїЅ");
         return true;
     }
 }

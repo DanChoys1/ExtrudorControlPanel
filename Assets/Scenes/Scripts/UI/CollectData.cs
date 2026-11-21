@@ -23,6 +23,24 @@ public class CollectData : MonoBehaviour
         valuesGroupArrays = new List<ValuesGroupArray>(GetComponentsInChildren<ValuesGroupArray>());
 
         InitData initData = new InitData(false);
+        initData.model = GetModel();
+
+        if (initData.model == ExtruderModel.Dual)
+        {
+            GetInitDataDual(initData);
+        }
+        else
+        {
+            GetInitDataSingle(initData);
+        }
+
+        InitValuesGroup(ref initData.train);
+
+        return initData;
+    }
+
+    void GetInitDataSingle(InitData initData)
+    {
         InitValuesGroupArray(ref initData.cyl, "BarrelConfiguration");
         InitValuesGroupArray(ref initData.sect, "ScrewConfiguration");
         InitValuesGroupArray(ref initData.S_K.S, "DieConfiguration");
@@ -33,9 +51,23 @@ public class CollectData : MonoBehaviour
         initData.data.nS_korp = initData.cyl.Count();
         InitValuesGroup(ref initData.dop);
         InitValuesGroup(ref initData.fluxData);
-        InitValuesGroup(ref initData.train);
+    }
 
-        return initData;
+    void GetInitDataDual(InitData initData)
+    {
+        InitValuesGroupArray(ref initData.cylinderDual, "BarrelConfigurationDual");
+        InitValuesGroupArray(ref initData.sectDual, "ScrewConfigurationDual");
+        InitValuesGroupArray(ref initData.sect_aDual, "ScrewConfigurationDual_a");
+        InitValuesGroupArray(ref initData.s_kDual.S, "DieConfigurationDual");
+        initData.s_kDual.Num_S = initData.s_kDual.S.Length;
+        InitValuesGroup(ref initData.dataDual, "DATA_Dual");
+        initData.dataDual.nS_1 = initData.sectDual.Count((TypesDual.SECT sec) => sec.S_Type == 1);
+        initData.dataDual.nS_2 = initData.sectDual.Count((TypesDual.SECT sec) => sec.S_Type == 2);
+        initData.dataDual.nS_1a = initData.sect_aDual.Count((TypesDual.SECT_a sec) => sec.S_Type == 1);
+        initData.dataDual.nS_2a = initData.sect_aDual.Count((TypesDual.SECT_a sec) => sec.S_Type == 2);
+        initData.dataDual.nS_korp = initData.cylinderDual.Count();
+        InitValuesGroup(ref initData.dop_dataDual, "DOP_DATADual");
+        InitValuesGroup(ref initData.datDual, "FluxDataDual");
     }
 
     public void SetInitData(InitData initData)
@@ -44,10 +76,17 @@ public class CollectData : MonoBehaviour
         AbjastValuesGroupArray(arrays, initData.cyl);
         AbjastValuesGroupArray(arrays, initData.sect);
         AbjastValuesGroupArray(arrays, initData.S_K.S);
+        AbjastValuesGroupArray(arrays, initData.cylinderDual, "BarrelConfigurationDual");
+        AbjastValuesGroupArray(arrays, initData.sectDual, "ScrewConfigurationDual");
+        AbjastValuesGroupArray(arrays, initData.sect_aDual, "ScrewConfigurationDual_a");
+        AbjastValuesGroupArray(arrays, initData.s_kDual.S, "DieConfigurationDual");
 
         valuesGroups = new List<ValuesGroup>(GetComponentsInChildren<ValuesGroup>());
         valuesGroupArrays = new List<ValuesGroupArray>(GetComponentsInChildren<ValuesGroupArray>());
 
+        // РњРѕРґРµР»СЊ (initData.model) РЅРµ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚СЃСЏ РѕС‚РґРµР»СЊРЅРѕ: РѕРЅР° Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё
+        // РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ РІС‹Р±СЂР°РЅРЅРѕР№ РјР°СЂРєРѕР№ СЌРєСЃС‚СЂСѓРґРµСЂР°, Р·РЅР°С‡РµРЅРёРµ РєРѕС‚РѕСЂРѕР№
+        // РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЃР°Рј SetValuesGroup РґР»СЏ РїРѕР»СЏ "Extruder" СЃС†РµРЅР°СЂРёСЏ.
         SetValuesGroupArrays(initData.cyl);
         SetValuesGroupArrays(initData.sect);
         SetValuesGroupArrays(initData.S_K.S);
@@ -55,11 +94,59 @@ public class CollectData : MonoBehaviour
         SetValuesGroup(initData.dop);
         SetValuesGroup(initData.fluxData);
         SetValuesGroup(initData.train);
+
+        SetValuesGroupArrays(initData.cylinderDual, "BarrelConfigurationDual");
+        SetValuesGroupArrays(initData.sectDual, "ScrewConfigurationDual");
+        SetValuesGroupArrays(initData.sect_aDual, "ScrewConfigurationDual_a");
+        SetValuesGroupArrays(initData.s_kDual.S, "DieConfigurationDual");
+        SetValuesGroup(initData.dataDual, "DATA_Dual");
+        SetValuesGroup(initData.dop_dataDual, "DOP_DATADual");
+        SetValuesGroup(initData.datDual, "FluxDataDual");
+    }
+
+    // РњРѕРґРµР»СЊ СЂР°СЃС‡С‘С‚Р° РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ РІС‹Р±СЂР°РЅРЅРѕР№ РјР°СЂРєРѕР№ СЌРєСЃС‚СЂСѓРґРµСЂР° (РїРѕР»Рµ "Extruder"
+    // РЅР° РІРєР»Р°РґРєРµ СЃС†РµРЅР°СЂРёСЏ) С‡РµСЂРµР· СЃРІСЏР·СЊ Extruder -> ExtruderType -> MathModel.
+    private static readonly string DualModelName = "Р”РІСѓС…С€РЅРµРєРѕРІС‹Р№";
+
+    Value GetExtruderValue()
+    {
+        foreach (var v in GetComponentsInChildren<Value>())
+        {
+            if (v.name == "Extruder")
+            {
+                return v;
+            }
+        }
+
+        return null;
+    }
+
+    public ExtruderModel GetModel()
+    {
+        Value v = GetExtruderValue();
+        if (v == null) return ExtruderModel.Single;
+
+        string brand = v.Val?.ToString();
+        if (string.IsNullOrEmpty(brand)) return ExtruderModel.Single;
+
+        string modelName = DropdownDatas.DB.GetMathModelName(brand);
+        return modelName == DualModelName ? ExtruderModel.Dual : ExtruderModel.Single;
     }
 
     void AbjastValuesGroupArray<T>(List<ValuesGroupArray> arrays, T[] vals)
     {
         var name = typeof(T).ToString();
+        foreach (var arr in arrays)
+        {
+            if (arr.name == name)
+            {
+                arr.SetSize(vals.Length);
+            }
+        }
+    }
+
+    void AbjastValuesGroupArray<T>(List<ValuesGroupArray> arrays, T[] vals, string name)
+    {
         foreach (var arr in arrays)
         {
             if (arr.name == name)
@@ -83,7 +170,7 @@ public class CollectData : MonoBehaviour
 
         if (grs.Count == 0)
         {
-            //Debug.Log($"На форме нет группы {name}");
+            //Debug.Log($"пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ {name}");
         }
 
         return grs;
@@ -108,7 +195,7 @@ public class CollectData : MonoBehaviour
         List<ValuesGroup> grs = grArrs.GetGroups();
         if (grs.Count == 0)
         {
-            //Debug.Log("На форме не найден тип массива" + typeof(T).ToString());
+            //Debug.Log("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ" + typeof(T).ToString());
             return;
         }
 
@@ -124,7 +211,19 @@ public class CollectData : MonoBehaviour
         List<ValuesGroup> grs = GetValuesGroups(typeof(T).ToString()[6..]);
         if (grs.Count == 0)
         {
-            Debug.Log("На форме не найден тип массива" + typeof(T).ToString());
+            Debug.Log("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ" + typeof(T).ToString());
+            return;
+        }
+
+        InitValuesGroupFromGroup(ref valuesGroup, grs);
+    }
+
+    public void InitValuesGroup<T>(ref T valuesGroup, string name)
+    {
+        List<ValuesGroup> grs = GetValuesGroups(name);
+        if (grs.Count == 0)
+        {
+            Debug.Log("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ" + name);
             return;
         }
 
@@ -162,7 +261,23 @@ public class CollectData : MonoBehaviour
         List<ValuesGroup> grs = grArrs.GetGroups();
         if (grs.Count == 0)
         {
-            //Debug.Log("На форме не найден тип массива" + typeof(T).ToString());
+            //Debug.Log("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ" + typeof(T).ToString());
+            return;
+        }
+
+        for (int i = 0; i < grs.Count(); ++i)
+        {
+            SetValuesGroupFromGroup(valuesGroup[i], grs.GetRange(i, 1));
+        }
+    }
+
+    public void SetValuesGroupArrays<T>(T[] valuesGroup, string name)
+    {
+        ValuesGroupArray grArrs = GetValuesGroupArray(name);
+        List<ValuesGroup> grs = grArrs.GetGroups();
+        if (grs.Count == 0)
+        {
+            //Debug.Log("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ" + name);
             return;
         }
 
@@ -177,7 +292,19 @@ public class CollectData : MonoBehaviour
         List<ValuesGroup> grs = GetValuesGroups(typeof(T).ToString());
         if (grs.Count == 0)
         {
-            //Debug.Log("На форме не найден тип массива" + typeof(T).ToString());
+            //Debug.Log("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ" + typeof(T).ToString());
+            return;
+        }
+
+        SetValuesGroupFromGroup(valuesGroup, grs);
+    }
+
+    public void SetValuesGroup<T>(T valuesGroup, string name)
+    {
+        List<ValuesGroup> grs = GetValuesGroups(name);
+        if (grs.Count == 0)
+        {
+            //Debug.Log("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ" + name);
             return;
         }
 
@@ -190,7 +317,7 @@ public class CollectData : MonoBehaviour
         List<ValuesGroup> grs = grArrs.GetCurrentGroups();
         if (grs.Count == 0)
         {
-            //Debug.Log("На форме не найден тип массива" + typeof(T).ToString());
+            //Debug.Log("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ" + typeof(T).ToString());
             return;
         }
 

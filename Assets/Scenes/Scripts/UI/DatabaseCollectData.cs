@@ -19,6 +19,12 @@ namespace Assets.Scenes.Scripts.UI
         private static readonly string ScrewConfiguration = "ScrewConfiguration";
         private static readonly string DieElement = "DieElement";
         private static readonly string DieConfiguration = "DieConfiguration";
+
+        // Конфигурация второго шнека и тип (модель) экструдера — используются
+        // только для двухшнековых экструдеров (Extruder.IdScrew2 заполнено).
+        private static readonly string ScrewConfiguration_a = "ScrewConfigurationDual_a";
+        private static readonly string ExtruderTypeField = "ExtruderType";
+
         private static readonly string Extruder = "Extruder";
         private static readonly string Polymer = "Polymer";
         private static readonly string Film = "Film";
@@ -399,10 +405,38 @@ namespace Assets.Scenes.Scripts.UI
             if (screwConf == null) Debug.Log($"Не найдено конфигурации шнека {(string)data[ScrewConfiguration]}");
             if (barrel == null || barrelConf == null || die == null || screw == null || screwConf == null) return;
 
+            // Тип экструдера (и тем самым модель расчёта) выбирается на той же
+            // вкладке. Если имя типа не задано или не найдено, остаётся прежний
+            // тип экструдера либо тип по умолчанию (первый в справочнике).
+            ExtruderType extrType = extr.IdTypeNavigation;
+            if (data.TryGetValue(ExtruderTypeField, out object typeNameObj))
+            {
+                string typeName = typeNameObj?.ToString();
+                var foundType = ec.ExtruderTypes.FirstOrDefault(t => t.Name == typeName);
+                if (foundType != null)
+                {
+                    extrType = foundType;
+                }
+            }
+            extrType ??= ec.ExtruderTypes.First();
+
+            // Второй шнек задаётся только для двухшнековых экструдеров.
+            ScrewPossibleСonfiguration screwConf_a = null;
+            if (data.TryGetValue(ScrewConfiguration_a, out object screwConfAName) &&
+                !string.IsNullOrEmpty(screwConfAName as string))
+            {
+                var screw_a = ec.Screws.FirstOrDefault(s => s.Name == (string)screwConfAName);
+                screwConf_a = ec.ScrewPossibleСonfigurations.FirstOrDefault(s => s.IdScrewNavigation == screw_a);
+
+                if (screw_a == null) Debug.Log($"Не найдено шнека {(string)screwConfAName}");
+                if (screwConf_a == null) Debug.Log($"Не найдено конфигурации шнека {(string)screwConfAName}");
+            }
+
             extr.IdBarrelNavigation = barrelConf;
             extr.IdDieNavigation = die;
             extr.IdScrew1Navigation = screwConf;
-            extr.IdTypeNavigation = ec.ExtruderTypes.First();
+            extr.IdScrew2Navigation = screwConf_a;
+            extr.IdTypeNavigation = extrType;
             extr.Brand = extruderName;
         }
 
@@ -421,11 +455,21 @@ namespace Assets.Scenes.Scripts.UI
                 {
                     new DesignVal {  ValName = DieConfiguration, Val = extruder.IdDieNavigation.Name },
                     new DesignVal {  ValName = ScrewConfiguration, Val = extruder.IdScrew1Navigation.Element.Name },
-                    new DesignVal {  ValName = BarrelConfiguration, Val = extruder.IdBarrelNavigation.Element.Name }
+                    new DesignVal {  ValName = BarrelConfiguration, Val = extruder.IdBarrelNavigation.Element.Name },
+                    new DesignVal {  ValName = ExtruderTypeField, Val = extruder.IdTypeNavigation.Name },
+                    new DesignVal {  ValName = ScrewConfiguration_a, Val = extruder.IdScrew2Navigation?.Element.Name ?? string.Empty }
                 };
             }
 
             return data;
+        }
+
+        // Модель расчёта (Program.ExtruderModel), соответствующая выбранной марке
+        // экструдера: определяется через Extruder → ExtruderType → MathModel.
+        public string GetMathModelName(string extruderBrand)
+        {
+            var extruder = ec.Extruders.FirstOrDefault(e => e.Brand == extruderBrand);
+            return extruder?.IdTypeNavigation?.IdModelNavigation?.Name;
         }
 
         private List<IValue> GetParametrs(IElement element)

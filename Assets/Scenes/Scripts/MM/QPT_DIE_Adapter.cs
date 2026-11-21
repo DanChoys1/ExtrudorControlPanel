@@ -32,8 +32,57 @@ namespace Extruder
             init(initData);
         }
 
+        public void initDual(InitData id)
+        {
+            try
+            {
+                qptDual = new QPTDual();
+                rectanDual = new RectanDual();
+
+                qptDual.init(id);
+
+                id.resDual = qptDual.Res;
+                rectanDual.init(id);
+
+                id.dop_dataDual.Q = rectanDual.Q_f * 1e-6;
+                qptDual.init(id, true);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+            }
+        }
+
+        public void initDual()
+        {
+            initDual(initData);
+        }
+
+        // Выполняет расчёт по модели, указанной в initData.model.
+        public void initByModel(InitData id)
+        {
+            initData = id;
+            if (id.model == ExtruderModel.Dual)
+            {
+                initDual(id);
+            }
+            else
+            {
+                init(id);
+            }
+        }
+
+        public void initByModel()
+        {
+            initByModel(initData);
+        }
+
         public QPT qpt = new QPT();
         public DIE die = new DIE();
+
+        public QPTDual qptDual = new QPTDual();
+        public RectanDual rectanDual = new RectanDual();
+
         public InitData initData;
     }
 }
