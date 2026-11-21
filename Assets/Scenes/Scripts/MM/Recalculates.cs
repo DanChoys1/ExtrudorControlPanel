@@ -239,10 +239,10 @@ public class Recalculates : MonoBehaviour
         _XPTTableInstructor.SetData(_qdAdapter.qptDual.ZXPT.Last());
         _XPT_aTableInstructor.SetData(_qdAdapter.qptDual.ZXPT_a.Last());
 
-        //_PGraphInstructor.SetData(_qdAdapter.qptDual.PZ.Last(),
-            //_qdAdapter.qptDual.PZ_a.Last());
-        //_TGraphInstructor.SetData(_qdAdapter.qptDual.TZ.Last(),
-            //_qdAdapter.qptDual.TZ_a.Last());
+        _PGraphInstructor.SetData(_qdAdapter.qptDual.PZ.Last(),
+            _qdAdapter.qptDual.PZ_a.Last());
+        _TGraphInstructor.SetData(_qdAdapter.qptDual.TZ.Last(),
+        _qdAdapter.qptDual.TZ_a.Last());
     }
 
     private float G()
